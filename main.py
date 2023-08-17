@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Setting JSON Filename
-filepath = 'D:\VSCode\Discord Botting\Mention-Counter-Bot\leaderboard.json'
+filepath = os.getenv('filepath')
+
 # Setting Intents
 intents = dc.Intents.default()
 intents.message_content = True
