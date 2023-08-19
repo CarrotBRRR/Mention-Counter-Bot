@@ -1,4 +1,5 @@
 import os, json, operator
+import random as rand
 import discord as dc
 from discord.ext import commands
 from discord.utils import get
@@ -83,6 +84,37 @@ async def getMentions(member, ctx):
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
+async def getLuddy(ctx):
+  print("Fetching the Luddy quotes...")
+  IDs = [834631585596309515, 793018805239808030, 728870835170967593, 720528612167778365]
+  quotes = ""
+  quote = ""
+  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
+  for ID in IDs:
+    message = await channel.fetch_message(ID)
+    quotes += message.content.replace("<@!336001822177099776>", "@LuddyLion").replace("<@336001822177099776>", "@LuddyLion") + "\n\n"
+
+  quotes
+  print('The Luddy Quotes have been Fetched!')
+  with open(txtdump, 'w', encoding='utf-8') as f:
+    f.write(quotes)
+
+async def getRandom(ctx):
+  print("Getting a random quote...")
+  quote = ""
+  messages = []
+  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
+  async for m in channel.history(limit=None):
+    messages.append(m)
+  message = rand.choice(messages)
+  quote = str(message.content)
+
+  for mentioned in message.mentions:
+    quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+  print('Got a Random Quote!')
+
+  return quote
+
 
 @bot.event
 async def on_message(message):
@@ -147,11 +179,34 @@ async def leaderboard(ctx):
   await ctx.send(embed=em)
 
 @bot.command()
+async def random(ctx):
+  rand = await getRandom(ctx)
+  em = dc.Embed(title='Your Random Quote is:', color=0xffbf00)
+  em.add_field(name=rand, value="")
+  em.set_footer(text='Truly Words of Wisdom...')
+  await ctx.send(embed = em)
+  
+
+@bot.command()
 async def quotes(ctx):
+  user = []
   user = ctx.message.mentions
+
   if len(user) != 1:
-    await ctx.send('Invalid Number of Users...')
-    return
+    if ctx.message.content.endswith('LuddyLion'):
+      print("Someone requested the Luddy Lion")
+      await getLuddy(ctx)
+      await ctx.message.author.send(f"Here is the quotes of The Luddy Lion: ", file=dc.File(txtdump))
+      return
+
+    if ctx.message.content.endswith('Gay'):
+      rand = await getRandom(ctx)
+      await ctx.message.author.send(rand)
+
+    else:
+      await ctx.send('Invalid Number of Users...')
+      return
+    
   else:
     await getMentions(user[0], ctx)
     await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(txtdump))
