@@ -22,9 +22,9 @@ guildID = os.getenv('guildID')
 # Counts number of times mentioned in a channel,
 # given the Context
 # Warning: Highly inneficient
-async def count(ctx):
+async def count(message, messages):
   data = []
-  guild = ctx.message.channel.guild
+  guild = message.channel.guild
 
   print('Beginning Count...')
 
@@ -32,15 +32,13 @@ async def count(ctx):
     if not member.bot:
       c = 0
       print('Counting for user ' + str(member) + '...')
-
-      async for message in ctx.channel.history(limit=None):
+      for message in messages:
         if member in message.mentions:
           c += 1
       if c > 0:
         obj = {
-            "Name": str(member),
-            "Mentions": int(c),
-            "Channel": str(ctx.channel)
+            "Name": str(member.name),
+            "Mentions": int(c)
         }
         data.append(obj)
 
@@ -53,6 +51,13 @@ async def count(ctx):
   print('Data refreshed!')
   return data
 
+async def getMessages(ctx):
+  print('Retrieving Message history...')
+  messages = []
+  async for message in ctx.channel.history(limit=None):
+    messages.append(message)
+  print('Messages retrieved!')
+  return messages
 
 async def getScores():
   with open(filepath, 'r') as f:
@@ -68,6 +73,7 @@ async def getScores():
 
   return userList
 
+#Get all quotes of a specified member
 async def getMentions(member, ctx):
   quotes = ""
   quote = ""
@@ -84,6 +90,7 @@ async def getMentions(member, ctx):
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
+#Secret
 async def getLuddy(ctx):
   print("Fetching the Luddy quotes...")
   IDs = [834631585596309515, 793018805239808030, 728870835170967593, 720528612167778365]
@@ -99,6 +106,8 @@ async def getLuddy(ctx):
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
+
+#Get a random message from the quotes channel
 async def getRandom(ctx):
   print("Getting a random quote...")
   quote = ""
@@ -133,8 +142,8 @@ async def on_message(message):
   else:
     print(message.channel)
     if str(message.channel) == os.getenv('quoteChannel') and len(message.mentions) > 0:
-      ctx = await bot.get_context(message)
-      await count(ctx)
+      messages = await getMessages(message)
+      await count(message, messages)
 
 
   await bot.process_commands(message)
