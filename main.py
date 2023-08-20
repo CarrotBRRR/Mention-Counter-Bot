@@ -1,4 +1,5 @@
-import os, json, operator
+import os, json
+import operator as op
 import random as rand
 import discord as dc
 from discord.ext import commands
@@ -18,11 +19,23 @@ intents.members = True
 bot = commands.Bot(command_prefix="q.", intents=intents)
 guildID = os.getenv('guildID')
 
+# Get all message history and returns an array of 
+# all messages of hardcoded channel
+# Needs Context to access quote channel
+async def getMessages(ctx):
+  print('Retrieving Message history...')
+  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
+  global messages
+  messages = []
+  async for message in channel.history(limit=None):
+    messages.append(message)
+  print('Messages retrieved!')
+  return messages
 
-# Counts number of times mentioned in a channel,
-# given the Context
-# Warning: Highly inneficient
-async def count(message, messages):
+
+# Counts number of times mentioned in a channel
+# Needs to pass a message event to access the guild
+async def count(message):
   data = []
   guild = message.channel.guild
 
@@ -31,7 +44,6 @@ async def count(message, messages):
   for member in guild.members:
     if not member.bot:
       c = 0
-      print('Counting for user ' + str(member) + '...')
       for message in messages:
         if member in message.mentions:
           c += 1
@@ -43,7 +55,7 @@ async def count(message, messages):
         data.append(obj)
 
   print('Finished Counting for All Members!')
-  data.sort(key=operator.itemgetter('Mentions'), reverse=True)
+  data.sort(key=op.itemgetter('Mentions'), reverse=True)
 
   with open(filepath, 'w', encoding="utf-8") as f:
     json.dump(data, f, indent=4)
@@ -51,15 +63,9 @@ async def count(message, messages):
   print('Data refreshed!')
   return data
 
-async def getMessages(ctx):
-  print('Retrieving Message history...')
-  messages = []
-  async for message in ctx.channel.history(limit=None):
-    messages.append(message)
-  print('Messages retrieved!')
-  return messages
-
+#Gets the scores from a JSON
 async def getScores():
+  print('Getting Scores...')
   with open(filepath, 'r') as f:
     members = json.load(f)
 
@@ -69,17 +75,18 @@ async def getScores():
     Count = int(user["Mentions"])
     userList.append([Name, Count])
 
-  print(userList)
+  print('Scores Retrieved!')
 
   return userList
 
-#Get all quotes of a specified member
+# Get all quotes of a specified member
+# Needs specified member and context to 
 async def getMentions(member, ctx):
   quotes = ""
   quote = ""
   channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
-  print(f'Searching for mentions in {channel}...')
-  async for message in channel.history(limit=None):
+  print(f'Searching for mentions of {member.name} in {channel}...')
+  async for message in messages:
     if member in message.mentions:
       quote = str(message.content)
       for mentioned in message.mentions:
@@ -90,12 +97,11 @@ async def getMentions(member, ctx):
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
-#Secret
+#Easter Egg
 async def getLuddy(ctx):
   print("Fetching the Luddy quotes...")
   IDs = [834631585596309515, 793018805239808030, 728870835170967593, 720528612167778365]
   quotes = ""
-  quote = ""
   channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
   for ID in IDs:
     message = await channel.fetch_message(ID)
@@ -108,13 +114,9 @@ async def getLuddy(ctx):
 
 
 #Get a random message from the quotes channel
-async def getRandom(ctx):
+async def getRandom():
   print("Getting a random quote...")
   quote = ""
-  messages = []
-  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
-  async for m in channel.history(limit=None):
-    messages.append(m)
   message = rand.choice(messages)
   quote = str(message.content)
 
@@ -123,6 +125,31 @@ async def getRandom(ctx):
   print('Got a Random Quote!')
 
   return quote
+
+async def editLB(message):
+  print('Editing Leaderboard...')
+  channel = bot.get_channel(int(os.getenv('LBChannelID')))
+  print(channel)
+  lb = await channel.fetch_message(int(os.getenv('LBMessageID')))
+
+  em = await createLBEmbed()
+  await lb.edit(embed=em)
+  print('Leaderboard Edited!')
+
+async def createLBEmbed():
+  list = await getScores()
+  index = 1
+
+  em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
+  for user in list:
+    em.add_field(name=f'{index}. {list[index-1][0]}',
+                  value=f'{list[index-1][1]} Quotes',
+                  inline=False)
+    index += 1
+  em.set_footer(text="Brought to you by: CarrotBRRR")
+
+
+  return em
 
 
 @bot.event
@@ -140,11 +167,11 @@ async def on_message(message):
     return
 
   else:
-    print(message.channel)
+    print(f'A message was sent in {message.channel}!')
     if str(message.channel) == os.getenv('quoteChannel') and len(message.mentions) > 0:
-      messages = await getMessages(message)
-      await count(message, messages)
-
+      await getMessages(message)
+      await count(message)
+      await editLB(message)
 
   await bot.process_commands(message)
   return
@@ -173,23 +200,12 @@ async def init(ctx):
 #retrieves scores and sends an embedded leaderboard
 @bot.command()
 async def leaderboard(ctx):
-
-  list = await getScores()
-
-  em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
-
-  index = 1
-  for user in list:
-    em.add_field(name=f'{index}. {list[index-1][0]}',
-                 value=f'{list[index-1][1]} Quotes',
-                 inline=False)
-    index += 1
-  em.set_footer(text="Brought to you by: CarrotBRRR")
+  em = await createLBEmbed()
   await ctx.send(embed=em)
 
 @bot.command()
 async def random(ctx):
-  rand = await getRandom(ctx)
+  rand = await getRandom()
   em = dc.Embed(title='Your Random Quote is:', color=0xffbf00)
   em.add_field(name=rand, value="")
   em.set_footer(text='Truly Words of Wisdom...')
@@ -209,7 +225,7 @@ async def quotes(ctx):
       return
 
     if ctx.message.content.endswith('Gay'):
-      rand = await getRandom(ctx)
+      rand = await getRandom()
       await ctx.message.author.send(rand)
 
     else:
