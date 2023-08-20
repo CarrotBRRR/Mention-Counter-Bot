@@ -19,6 +19,9 @@ intents.members = True
 bot = commands.Bot(command_prefix="q.", intents=intents)
 guildID = os.getenv('guildID')
 
+#Global Variables
+global messages
+
 # Get all message history and returns an array of 
 # all messages of hardcoded channel
 # Needs Context to access quote channel
@@ -31,7 +34,6 @@ async def getMessages(ctx):
     messages.append(message)
   print('Messages retrieved!')
   return messages
-
 
 # Counts number of times mentioned in a channel
 # Needs to pass a message event to access the guild
@@ -161,7 +163,10 @@ async def on_message(message):
     return
 
   if message.content.startswith("q."):
-    print('Message is a Command (starts with q.)')
+    print(f'Message is a Command ({message.content})')
+
+    if 'messages' not in globals():
+      await getMessages(message)
 
     await bot.process_commands(message)
     return
