@@ -88,7 +88,7 @@ async def getMentions(member, ctx):
   quote = ""
   channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
   print(f'Searching for mentions of {member.name} in {channel}...')
-  async for message in messages:
+  for message in messages:
     if member in message.mentions:
       quote = str(message.content)
       for mentioned in message.mentions:
