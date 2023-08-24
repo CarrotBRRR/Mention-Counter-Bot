@@ -19,9 +19,6 @@ intents.members = True
 bot = commands.Bot(command_prefix="q.", intents=intents)
 guildID = os.getenv('guildID')
 
-#Global Variables
-global messages
-
 # Get all message history and returns an array of 
 # all messages of hardcoded channel
 # Needs Context to access quote channel
@@ -114,7 +111,6 @@ async def getLuddy(ctx):
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
-
 #Get a random message from the quotes channel
 async def getRandom():
   print("Getting a random quote...")
@@ -153,7 +149,6 @@ async def createLBEmbed():
 
   return em
 
-
 @bot.event
 async def on_message(message):
   if message.author.bot:
@@ -181,18 +176,15 @@ async def on_message(message):
   await bot.process_commands(message)
   return
 
-
 #Send a message to Console when Bot is Ready
 @bot.event
 async def on_ready():
   print(f'Bot connected as {bot.user}')
 
-
 #Funny Joke Command
 @bot.command()
 async def bingchilling(ctx):
   await ctx.send("早上好中国现在我有冰淇淋")
-
 
 #Initiallizes Leaderboard Location
 @bot.command()
@@ -200,7 +192,6 @@ async def init(ctx):
   print('Initializing Leaderboard...')
   await count(ctx)
   print('Leaderboard Initialized for Channel \"' + str(ctx.channel) + '\"!')
-
 
 #retrieves scores and sends an embedded leaderboard
 @bot.command()
@@ -215,7 +206,6 @@ async def random(ctx):
   em.add_field(name=rand, value="")
   em.set_footer(text='Truly Words of Wisdom...')
   await ctx.send(embed = em)
-  
 
 @bot.command()
 async def quotes(ctx):
@@ -240,6 +230,5 @@ async def quotes(ctx):
   else:
     await getMentions(user[0], ctx)
     await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(txtdump))
-
 
 bot.run(os.getenv('TOKEN'))
