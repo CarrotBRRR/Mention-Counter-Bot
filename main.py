@@ -114,7 +114,7 @@ async def getLuddy(ctx):
 #Get a random message from the quotes channel
 async def getRandom():
   print("Getting a random quote...")
-  quote = ""
+
   message = rand.choice(messages)
   quote = str(message.content)
 
@@ -186,6 +186,21 @@ async def on_ready():
 async def bingchilling(ctx):
   await ctx.send("早上好中国现在我有冰淇淋")
 
+@bot.command()
+async def changedaworld(ctx):
+  print('getting the Legendary quote')
+  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
+  message = await channel.fetch_message(889736462038335538)
+  embedarray = []
+  em = dc.Embed(title='The Most Legendary Quote', color=0xffbf00)
+  for item in message.attachments:
+    link = item.url
+    em.set_image(url=link)
+    embedarray.append(em)
+  print('Legendary Quote Retrieved!')
+  em.add_field(name=message.content, value ="")
+  await ctx.send(embeds=embedarray)
+
 #Initiallizes Leaderboard Location
 @bot.command()
 async def init(ctx):
@@ -201,10 +216,22 @@ async def leaderboard(ctx):
 
 @bot.command()
 async def random(ctx):
-  rand = await getRandom()
+  print("Getting a random quote...")
+  message = rand.choice(messages)
+  quote = str(message.content)
+
+  for mentioned in message.mentions:
+    quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+  print('Got a Random Quote!')
+
+  print('Preparing Embed...')
   em = dc.Embed(title='Your Random Quote is:', color=0xffbf00)
-  em.add_field(name=rand, value="")
+  em.add_field(name=quote, value = "")
   em.set_footer(text='Truly Words of Wisdom...')
+  if len(message.attachments) != 0:
+    em.set_image(url=message.attachments[0].url)
+  print('Sending Random Quote Embed!')
+
   await ctx.send(embed = em)
 
 @bot.command()
