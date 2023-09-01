@@ -2,7 +2,7 @@ import os, json
 import operator as op
 import random as rand
 import discord as dc
-from discord.ext import commands
+from discord.ext import commands as comman
 from discord.utils import get
 from dotenv import load_dotenv
 
@@ -16,7 +16,7 @@ txtdump = os.getenv('txtdump')
 intents = dc.Intents.default()
 intents.message_content = True
 intents.members = True
-bot = commands.Bot(command_prefix="q.", intents=intents)
+bot = comman.Bot(command_prefix="q.", intents=intents)
 guildID = os.getenv('guildID')
 
 # Get all message history and returns an array of 
@@ -184,7 +184,7 @@ async def on_ready():
 #Funny Joke Command
 @bot.command()
 async def bingchilling(ctx):
-  await ctx.send("早上好中国现在我有冰淇淋")
+  await ctx.send("早上好中國現在我有冰淇淋")
 
 @bot.command()
 async def changedaworld(ctx):
@@ -224,12 +224,14 @@ async def random(ctx):
     quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
   print('Got a Random Quote!')
 
+  print(f'discordapp.com/channels/{guildID}/{os.getenv("qChannelID")}/{message.id}')
+
   print('Preparing Embed...')
-  em = dc.Embed(title='Your Random Quote is:', color=0xffbf00)
+  em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{guildID}/{os.getenv("qChannelID")}/{message.id}')
   em.add_field(name=quote, value = "")
-  em.set_footer(text='Truly Words of Wisdom...')
   if len(message.attachments) != 0:
     em.set_image(url=message.attachments[0].url)
+  em.set_footer(text='Truly Words of Wisdom...')
   print('Sending Random Quote Embed!')
 
   await ctx.send(embed = em)
@@ -257,5 +259,15 @@ async def quotes(ctx):
   else:
     await getMentions(user[0], ctx)
     await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(txtdump))
+
+@bot.command()
+async def commands(ctx):
+  em = dc.Embed(title="Command List:")
+  em.add_field(name='q.quotes @user', value='Retrieves and Sends all quotes attributed to @user')
+  em.add_field(name='q.random', value='Chooses a random message in quotes channel and sends it')
+  em.set_footer(text='Brought to you by: CarrotBRRR')
+  await ctx.send(embed=em)
+  await ctx.message.author.send('**Keep this a secret...**\n(Headphone warning)', 
+                                file=dc.File(os.getenv('audiopath')))
 
 bot.run(os.getenv('TOKEN'))
