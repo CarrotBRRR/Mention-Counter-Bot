@@ -255,7 +255,7 @@ async def quotes(ctx):
     else:
       await ctx.send('Invalid Number of Users...')
       return
-    
+
   else:
     await getMentions(user[0], ctx)
     await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(txtdump))
@@ -269,5 +269,6 @@ async def commands(ctx):
   await ctx.send(embed=em)
   await ctx.message.author.send('**Keep this a secret...**\n(Headphone warning)', 
                                 file=dc.File(os.getenv('audiopath')))
-
+  
+bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
