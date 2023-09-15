@@ -29,6 +29,7 @@ async def getMessages(ctx):
   messages = []
   async for message in channel.history(limit=None):
     messages.append(message)
+  messages.reverse()
   print('Messages retrieved!')
   return messages
 
@@ -151,6 +152,9 @@ async def createLBEmbed():
 
 @bot.event
 async def on_message(message):
+  if 'messages' not in globals():
+    await getMessages(message)
+  
   if message.author.bot:
     print('Message is from bot')
 
@@ -160,18 +164,17 @@ async def on_message(message):
   if message.content.startswith("q."):
     print(f'Message is a Command ({message.content})')
 
-    if 'messages' not in globals():
-      await getMessages(message)
-
     await bot.process_commands(message)
     return
 
   else:
     print(f'A message was sent in {message.channel}!')
-    if str(message.channel) == os.getenv('quoteChannel') and len(message.mentions) > 0:
-      await getMessages(message)
-      await count(message)
-      await editLB(message)
+    if str(message.channel) == os.getenv('quoteChannel'):
+      messages.append(message)
+      print(messages[-2].content)
+      if len(message.mentions) > 0:
+        await count(message)
+        await editLB(message)
 
   await bot.process_commands(message)
   return
