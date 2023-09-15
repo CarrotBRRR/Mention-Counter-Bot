@@ -171,7 +171,6 @@ async def on_message(message):
     print(f'A message was sent in {message.channel}!')
     if str(message.channel) == os.getenv('quoteChannel'):
       messages.append(message)
-      print(messages[-2].content)
       if len(message.mentions) > 0:
         await count(message)
         await editLB(message)
