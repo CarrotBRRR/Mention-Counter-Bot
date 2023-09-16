@@ -274,14 +274,20 @@ async def commands(ctx):
   
 @bot.command()
 async def refresh(ctx):
+  print("Refreshing Message Database Manually...")
   await getMessages(ctx)
   await count(ctx)
+  print("Message Database Manually Refreshed!")
+  ctx.send("**Message Database Manually Refreshed!**")
 
 @bot.command()
 async def updateLB(ctx):
+  print("Refreshing Leaderboard Manually...")
   await getMessages(ctx)
   await count(ctx)
   await editLB(ctx)
+  print("Leaderboard Manually Refreshed!")
+  ctx.send("**Leaderboard Manually Refreshed!**")
   
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
