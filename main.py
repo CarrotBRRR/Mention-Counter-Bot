@@ -278,7 +278,7 @@ async def refresh(ctx):
   await getMessages(ctx)
   await count(ctx)
   print("Message Database Manually Refreshed!")
-  ctx.send("**Message Database Manually Refreshed!**")
+  await ctx.send("**Message Database Manually Refreshed!**")
 
 @bot.command()
 async def updateLB(ctx):
@@ -287,7 +287,7 @@ async def updateLB(ctx):
   await count(ctx)
   await editLB(ctx)
   print("Leaderboard Manually Refreshed!")
-  ctx.send("**Leaderboard Manually Refreshed!**")
+  await ctx.send("**Leaderboard Manually Refreshed!**")
   
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
