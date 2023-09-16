@@ -272,5 +272,16 @@ async def commands(ctx):
   await ctx.message.author.send('**Keep this a secret...**\n(Headphone warning)', 
                                 file=dc.File(os.getenv('audiopath')))
   
+@bot.command()
+async def refresh(ctx):
+  await getMessages(ctx)
+  await count(ctx)
+
+@bot.command()
+async def updateLB(ctx):
+  await getMessages(ctx)
+  await count(ctx)
+  await editLB(ctx)
+  
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
