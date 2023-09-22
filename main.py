@@ -44,13 +44,18 @@ async def count(message):
   for member in guild.members:
     if not member.bot:
       c = 0
+      a = 0
       for message in messages:
         if member in message.mentions:
           c += 1
+        if member == message.author and len(message.mentions) >= 1:
+          a += 1
+
       if c > 0:
         obj = {
             "Name": str(member.name),
-            "Mentions": int(c)
+            "Mentions": int(c),
+            "Authored": int(a)
         }
         data.append(obj)
 
@@ -73,7 +78,8 @@ async def getScores():
   for user in members:
     Name = user["Name"]
     Count = int(user["Mentions"])
-    userList.append([Name, Count])
+    Authored = int(user["Authored"])
+    userList.append([Name, Count, Authored])
 
   print('Scores Retrieved!')
 
@@ -94,6 +100,22 @@ async def getMentions(member, ctx):
 
       quotes += quote + "\n\n"
   print('All mentions Found!')
+  with open(txtdump, 'w', encoding='utf-8') as f:
+    f.write(quotes)
+
+async def getAuthor(member, ctx):
+  quotes = ""
+  quote = ""
+  channel = dc.utils.get(ctx.guild.channels, name=os.getenv('quoteChannel'))
+  print(f'Searching for Author {member.name} in {channel}...')
+  for message in messages:
+    if member == message.author and len(message.mentions) >= 1:
+      quote = str(message.content)
+      for mentioned in message.mentions:
+        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+
+      quotes += quote + "\n\n"
+  print(f'All quotes with author {member.name} Found!')
   with open(txtdump, 'w', encoding='utf-8') as f:
     f.write(quotes)
 
@@ -146,7 +168,6 @@ async def createLBEmbed():
                   inline=False)
     index += 1
   em.set_footer(text="Brought to you by: CarrotBRRR")
-
 
   return em
 
@@ -261,6 +282,17 @@ async def quotes(ctx):
   else:
     await getMentions(user[0], ctx)
     await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(txtdump))
+
+@bot.command()
+async def author(ctx):
+  user = []
+  user = ctx.message.mentions
+  if len(user) != 1:
+    await ctx.send('Invalid Number of Users...')
+    return
+  else:
+    await getAuthor(user[0], ctx)
+    await ctx.message.author.send(f"Here is the quotes authored by {user[0]}: ", file=dc.File(txtdump))
 
 @bot.command()
 async def commands(ctx):
