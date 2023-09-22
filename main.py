@@ -175,6 +175,7 @@ async def createLBEmbed():
 async def on_message(message):
   if 'messages' not in globals():
     await getMessages(message)
+    await count(message)
   
   if message.author.bot:
     print('Message is from bot')
