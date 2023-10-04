@@ -189,6 +189,14 @@ async def on_message(message):
     await bot.process_commands(message)
     return
 
+  if message.content == "yo":
+    print(f"{message.content}\noye")
+    ctx = await bot.get_context(message)
+    await ctx.send("oye")
+
+    await bot.process_commands(message)
+    return
+
   else:
     print(f'A message was sent in {message.channel}!')
     if str(message.channel) == os.getenv('quoteChannel'):
