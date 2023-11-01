@@ -304,6 +304,11 @@ async def author(ctx):
     await ctx.message.author.send(f"Here is the quotes authored by {user[0]}: ", file=dc.File(txtdump))
 
 @bot.command()
+async def authour(ctx):
+  await author(ctx)
+
+
+@bot.command()
 async def commands(ctx):
   em = dc.Embed(title="Command List:")
   em.add_field(name='q.quotes @user', value='Retrieves and Sends all quotes attributed to @user')
