@@ -198,7 +198,7 @@ async def on_message(message):
     return
 
   else:
-    print(f'A message was sent in {message.channel}!')
+    print(f'({message.channel}) {message.author}: {message.content}')
     if str(message.channel) == os.getenv('quoteChannel'):
       messages.append(message)
       if len(message.mentions) > 0:
