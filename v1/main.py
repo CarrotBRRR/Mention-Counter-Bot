@@ -176,6 +176,8 @@ async def on_message(message):
   if 'messages' not in globals():
     await getMessages(message)
     await count(message)
+
+  print(f'({message.channel}) {message.author}: {message.content}')
   
   if message.author.bot:
     print('Message is from bot')
@@ -198,7 +200,6 @@ async def on_message(message):
     return
 
   else:
-    print(f'({message.channel}) {message.author}: {message.content}')
     if str(message.channel) == os.getenv('quoteChannel'):
       messages.append(message)
       if len(message.mentions) > 0:
