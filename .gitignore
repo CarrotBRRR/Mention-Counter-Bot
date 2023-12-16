@@ -1,4 +1,7 @@
+# Files Extensions to Ignore
 *.env
 *.json
 *.txt
-*.bat
+
+# Folders to Ignore
+data/
