@@ -1,4 +1,4 @@
-class GuildData:
+class GuildInfo:
     def __init__(self, name, id):
         self.name = str(name)
         self.id = int(id)
