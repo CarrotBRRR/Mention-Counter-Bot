@@ -134,7 +134,7 @@ async def getScores(ctx):
     
     return Scores
 
-async def createLB(ctx):
+async def createLBEm(ctx):
     scores = await getScores(ctx)
     index = 1
 
@@ -147,6 +147,19 @@ async def createLB(ctx):
     em.set_footer(text="Brought to you by: CarrotBRRR")
 
     return em
+
+async def updateLB(ctx):
+    print('Updating Leaderboard...')
+    config = getConfig(ctx)
+
+    channel = config["LB"]["Channel ID"]
+    lbmessage = await channel.fetch_message(int(config["LB"]["Message ID"]))
+
+    em = await createLBEm()
+    await lbmessage.edit(embed=em)
+    print('Leaderboard Updated!')
+
+
 # ----------------------------------- Bot Events ----------------------------------
 @bot.event
 async def on_ready():
@@ -192,23 +205,35 @@ async def on_ready():
     print(f'Bot connected as {bot.user}')
 
 @bot.event
-@comms.has_permissions(administrator=True)
 async def on_message(message):
-    print(f'{message.guild} {message.channel} {message.author}: {message.content}')
+    ctx = bot.get_context(message)
+    config = getConfig(ctx)
+    guild_info = getGuildInfo(ctx)
+
+    if not message.author.bot:
+        print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
 
     if message.content.startswith("q."):
         print("Command Detected!")
 
         await bot.process_commands(message)
         return
+    
+    if message.channel.id == config["Q Channel"]:
+        guild_info.messages.append(message)
+        if len(message.mentions) > 0:
+            await count(ctx)
+            await updateLB(ctx)
+
+    await bot.process_commands(message)
+    return
 
 # --------------------------------- Bot Commands ----------------------------------
 
 
 # -------------------------------- Admin Commands ---------------------------------
-    
 # Command to set q channel
-# q.setQChannel [channel ID]
+# Usage: q.setQChannel [channel ID]
 @bot.command()
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx):
@@ -223,10 +248,12 @@ async def setQChannel(ctx):
     else: 
         print("invalid number of channels")
 
+# Command to initialize leaderboard
+# Usage: q.initLB
 @bot.command()
 @comms.has_permissions(administrator=True)
 async def initLB(ctx):
-    em = await createLB()
+    em = await createLBEm()
     lb = await ctx.send(embed=em)
     config = getConfig(ctx)
     lbobj = {
