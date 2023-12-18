@@ -83,10 +83,13 @@ async def count(ctx):
             c = 0
             a = 0
             for message in guild_info.messages:
-                if member in message.mentions:
+                if member in message.mentions and member != message.author:
                     c += 1
-                if member == message.author and len(message.mentions) >= 1:
-                    a += 1
+
+                if member == message.author and len(message.mentions) >= 1 :
+                    if member not in message.mentions:
+                        a += 1
+
         if c > 0 or a > 0:
             # Create an object of member and counts
             obj = {
@@ -149,16 +152,22 @@ async def createLBEm(ctx):
     return em
 
 async def updateLB(ctx):
-    print('Updating Leaderboard...')
     config = getConfig(ctx)
+    lb_channelid = int(config["LB"]["Channel ID"])
+    lb_messageid = int(config["LB"]["Message ID"])
 
-    channel = config["LB"]["Channel ID"]
-    lbmessage = await channel.fetch_message(int(config["LB"]["Message ID"]))
+    if lb_channelid != 0 and lb_messageid != 0:
+        print('Updating Leaderboard...')
 
-    em = await createLBEm()
-    await lbmessage.edit(embed=em)
-    print('Leaderboard Updated!')
+        channel = bot.get_channel(lb_channelid)
+        lbmessage = await channel.fetch_message(lb_messageid)
+       
+        em = await createLBEm()
+        await lbmessage.edit(embed=em)
+        print('Leaderboard Updated!')
 
+    else:
+        print('Leaderboard not Initialized!')
 
 # ----------------------------------- Bot Events ----------------------------------
 @bot.event
@@ -229,7 +238,28 @@ async def on_message(message):
     return
 
 # --------------------------------- Bot Commands ----------------------------------
+async def random(ctx):
+    print("Getting a random quote...")
+    data = getGuildInfo(ctx)
+    messages = data.messages
+    message = rand.choice(messages)
+    quote = str(message.content)
 
+    for mentioned in message.mentions:
+        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+    print('Got a Random Quote!')
+
+    print(f'discordapp.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
+
+    print('Preparing Embed...')
+    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
+    em.add_field(name=quote, value = "")
+    if len(message.attachments) != 0:
+        em.set_image(url=message.attachments[0].url)
+    em.set_footer(text='Truly Words of Wisdom...')
+    print('Sending Random Quote Embed!')
+
+    await ctx.send(embed = em)
 
 # -------------------------------- Admin Commands ---------------------------------
 # Command to set q channel
