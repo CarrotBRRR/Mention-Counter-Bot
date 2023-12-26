@@ -71,7 +71,30 @@ async def getQuotes(ctx):
     data.messages.reverse()
     print('Quotes Retrieved!')
 
-# Counts amount of times mentioned in 
+# Retrieves Messages that Mention the specified user
+async def getMentions(ctx, member):
+    data = getGuildInfo(ctx)
+    config = getConfig(ctx)
+    channel = dc.utils.get(ctx.guild.channels, config["Q Channel"])
+
+    quote = ""
+    quotes = ""
+    print(f'Searching for mentions of {member.name} in {channel}...')
+
+    for message in data.messages:
+        if member in message.mentions:
+            quote = str(message.content)
+            for mentioned in message.mentions:
+                quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+            
+            quotes += quote + "\n\n"
+
+    print('All mentions Found!')
+    
+    with open(f'./data/{ctx.guild}/dump.txt', 'w+') as d:
+        d.write(quotes)
+
+# Counts amount of times mentioned in
 # the cached messages in GuildInfo class object
 async def count(ctx):
     guild_info = getGuildInfo(ctx)
@@ -215,9 +238,16 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    # Get Message Context
     ctx = bot.get_context(message)
+
+    # Retrieve Config
     config = getConfig(ctx)
     guild_info = getGuildInfo(ctx)
+
+    # Retrieve Messages if no quotes in messages attribute in Guild Info
+    if len(guild_info.messages) == 0:
+        getQuotes(ctx)
 
     if not message.author.bot:
         print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
@@ -238,28 +268,62 @@ async def on_message(message):
     return
 
 # --------------------------------- Bot Commands ----------------------------------
+# Get a random quote from the server
+@bot.command()
 async def random(ctx):
     print("Getting a random quote...")
+    # Get List of Quotes for Guild
     data = getGuildInfo(ctx)
     messages = data.messages
+
+    # Choose a quote
     message = rand.choice(messages)
     quote = str(message.content)
 
+    # Replace User IDs with username
     for mentioned in message.mentions:
         quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
     print('Got a Random Quote!')
 
+    # Get Link to original quote
     print(f'discordapp.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
 
+    # Prepare the Embed
     print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
     em.add_field(name=quote, value = "")
-    if len(message.attachments) != 0:
-        em.set_image(url=message.attachments[0].url)
+
+    att_ems = []
+    att_ems.append(em)
+
+    # if len(message.attachments) != 0:
+    for attachment in message.attachments:
+        att = dc.Embed()
+        att.set_image(url = attachment.url)
+        att_ems.append(att)
+
     em.set_footer(text='Truly Words of Wisdom...')
     print('Sending Random Quote Embed!')
 
-    await ctx.send(embed = em)
+    await ctx.send(embed = att_ems)
+
+@bot.command()
+async def quotes(ctx):
+    user = []
+    user = ctx.message.mentions
+
+    if len(user) != 1:
+        await ctx.send('Invalid Number of Users...\n**Usage:** q.quotes @user')
+        return
+    else:
+        await getMentions(ctx, user[0])
+        with open(f'./data/{ctx.guild}/dump.txt', 'r') as d:
+            await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(d))
+
+# Funny Joke Command
+@bot.command()
+async def bingchilling(ctx):
+  await ctx.send("早上好中國現在我有冰淇淋")
 
 # -------------------------------- Admin Commands ---------------------------------
 # Command to set q channel
@@ -293,6 +357,7 @@ async def initLB(ctx):
 
     editConfig(ctx, config, "LB", lbobj)
 
+    await ctx.send(embed=em)
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
