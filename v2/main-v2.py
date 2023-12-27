@@ -255,7 +255,7 @@ async def on_ready():
                 json.dump(info, f, indent=4)
                 
             print(f'Directory for {guild.name} initialized!')
-            
+    print('Files Initialized!')
     print(f'Bot connected as {bot.user}')
 
 @bot.event
@@ -290,6 +290,36 @@ async def on_message(message):
 
     await bot.process_commands(message)
     return
+
+@bot.event
+async def on_guild_join(guild):
+    data = GuildInfo(guild.name, guild.id)
+    guilds.append(data)
+
+    # Get Path for specific guild
+    path = f'./data/{guild.id}'
+
+    # Set-up Directory and Config
+    if not os.path.exists(path):
+        print(f'Setting up Directory for {guild.name}...')
+        os.mkdir(path)
+
+        # Set-up Default Config JSON
+        info = {
+            "Name" : str(guild.name),
+            "Guild ID" : int(guild.id),
+            "Q Channel" : int(0),
+            "LB" : {
+                "Channel ID" : int(0),
+                "Message ID" : int(0)
+            }
+        }
+
+        # Write to a File
+        with open(os.path.join(path, 'ServerInfo.json'), 'w+') as f:
+            json.dump(info, f, indent=4)
+            
+        print(f'Directory for {guild.name} initialized!')
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
