@@ -409,7 +409,7 @@ async def setQChannel(ctx):
         print("Setting up default channel...")
 
         config = await getConfig(ctx)
-        await editConfig(ctx, config, "Q Channel", int(ctx.message.raw_channel_mentions[0]))
+        await editConfig(ctx, config, "Q Channel", ctx.message.raw_channel_mentions[0])
 
         channel = bot.get_channel(config["Q Channel"])
 
@@ -423,7 +423,7 @@ async def setQChannel(ctx):
 @bot.command()
 @comms.has_permissions(administrator=True)
 async def initLB(ctx):
-    em = await createLBEm()
+    em = await createLBEm(ctx)
     lb = await ctx.send(embed=em)
     config = await getConfig(ctx)
     lbobj = {
