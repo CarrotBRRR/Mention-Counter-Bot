@@ -410,8 +410,7 @@ async def setQChannel(ctx):
 
         config = getConfig(ctx)
         editConfig(ctx, config, "Q Channel", ctx.message.raw_channel_mentions)
-
-        print(f'Q Channel for {ctx.guild.id} is now {ctx.get_channel(config["Q Channel"])}')
+        print(f'Q Channel for {ctx.guild.id} is now {bot.get_channel(config["Q Channel"])}')
 
     else: 
         print("invalid number of channels")
