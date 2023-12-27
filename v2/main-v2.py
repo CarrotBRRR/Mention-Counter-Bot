@@ -55,7 +55,6 @@ async def getGuildInfo(ctx):
 async def getQuotes(ctx):
     data = await getGuildInfo(ctx)
     config = await getConfig(ctx)
-    print(config["Q Channel"])
     channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
 
     print(f'Retrieving Quotes for {ctx.guild} in {channel}')
@@ -430,8 +429,6 @@ async def initLB(ctx):
     }
 
     await editConfig(ctx, config, "LB", lbobj)
-
-    await ctx.send(embed=em)
 
 @bot.command()
 @comms.has_guild_permissions(administrator=True)
