@@ -271,7 +271,7 @@ async def on_message(message):
         await getQuotes(ctx)
     
     if message.content == "yo":
-        print(f"{message.content}\noye")
+        print(f"oye")
         ctx = await bot.get_context(message)
         await ctx.send("oye")
 
@@ -425,7 +425,7 @@ async def initLB(ctx):
     lb = await ctx.send(embed=em)
     config = await getConfig(ctx)
     lbobj = {
-        "Channel ID" : int(lb.get_channel().id),
+        "Channel ID" : int(lb.channel.id),
         "Message ID" : int(lb.id)
     }
 
