@@ -86,7 +86,7 @@ async def getMentions(ctx, member):
 
     print('All mentions Found!')
     
-    with open(f'./data/{ctx.guild}/dump.txt', 'w+', encoding='utf-8') as d:
+    with open(f'./data/{ctx.guild.id}/dump.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
 
 async def getAuthoured(ctx, member):
