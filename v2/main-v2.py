@@ -261,10 +261,8 @@ async def on_message(message):
     if not message.author.bot:
         print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
 
+    ctx = await bot.get_context(message)
     if ctx.guild is not None:
-        # Get Message Context
-        ctx = await bot.get_context(message)
-
         # Retrieve Config
         config = await getConfig(ctx)
         guild_info = await getGuildInfo(ctx)
