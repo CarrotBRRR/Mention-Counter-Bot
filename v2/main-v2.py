@@ -19,8 +19,7 @@ bot = comms.Bot(command_prefix="q.", intents=intents)
 # ----------------------------------- Functions -----------------------------------
 # Retrieves config for ctx
 async def getConfig(ctx):
-    path = f'./data/{ctx.guild.id}'
-    filepath = os.path.join(path, 'ServerInfo.json')
+    filepath = f'./data/{ctx.guild.id}/ServerInfo.json'
 
     with open(filepath, 'r') as f:
         config = json.load(f)
@@ -30,8 +29,7 @@ async def getConfig(ctx):
 # Edits the given config, attribute to change 
 # and newdata to change
 async def editConfig(ctx, config, attribute, newdata):
-    path = f'./data/{ctx.guild.id}'
-    filepath = os.path.join(path, 'ServerInfo.json')
+    filepath = f'./data/{ctx.guild.id}/ServerInfo.json'
     config[attribute] = newdata
 
     with open(filepath, 'w+') as f:
@@ -142,8 +140,7 @@ async def count(ctx):
     print('Finished Counting!')
 
     print('Saving Scores...')
-    path = f'./data/{ctx.guild.id}'
-    filepath = os.path.join(path, 'Leaderboard.json')
+    filepath = f'./data/{ctx.guild.id}/Leaderboard.json'
 
     counts.sort(key=op.itemgetter('Mentions'), reverse=True)
 
@@ -157,8 +154,7 @@ async def count(ctx):
 async def getScores(ctx):
     print('Getting Scores...')
     # Load JSON containing Scores
-    path = f'./data/{ctx.guild.id}'
-    filepath = os.path.join(path, 'Leaderboard.json')
+    filepath = f'./data/{ctx.guild.id}/Leaderboard.json'
 
     with open(filepath, 'r') as f:
         users = json.load(f)
@@ -232,12 +228,12 @@ async def on_ready():
         guilds.append(data)
 
         # Get Path for specific guild
-        path = f'./data/{guild.id}'
+        filepath = f'./data/{guild.id}/ServerInfo.json'
 
         # Set-up Directory and Config
-        if not os.path.exists(path):
+        if not os.path.exists(filepath):
             print(f'Setting up Directory for {guild.name}...')
-            os.mkdir(path)
+            os.mkdir(filepath)
 
             # Set-up Default Config JSON
             info = {
@@ -251,7 +247,7 @@ async def on_ready():
             }
 
             # Write to a File
-            with open(os.path.join(path, 'ServerInfo.json'), 'w+') as f:
+            with open(filepath, 'w+') as f:
                 json.dump(info, f, indent=4)
                 
             print(f'Directory for {guild.name} initialized!')
