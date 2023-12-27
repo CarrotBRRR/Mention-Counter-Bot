@@ -372,7 +372,7 @@ async def quotes(ctx):
         return
     else:
         await getMentions(ctx, user[0])
-        dump_path = f'./data/{ctx.guild}/dump.txt'
+        dump_path = f'./data/{ctx.guild.id}/dump.txt'
         await ctx.message.author.send(f"Here are the quotes of {user[0]}: ", file=dc.File(dump_path))
 
 # Retrieve Quotes Authored by Specified User
@@ -386,7 +386,7 @@ async def authour(ctx):
         return
     else:
         await getAuthoured(ctx, user[0])
-        dump_path = f'./data/{ctx.guild}/dump.txt'
+        dump_path = f'./data/{ctx.guild.id}/dump.txt'
         await ctx.message.author.send(f"Here are the quotes authored by {user[0]}: ", file=dc.File(dump_path))
 
 # For people from the USA
