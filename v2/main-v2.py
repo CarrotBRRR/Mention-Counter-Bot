@@ -270,17 +270,20 @@ async def on_message(message):
         # Retrieve Messages if no quotes in messages attribute in Guild Info
         if config["Q Channel"] != 0 and not guild_info.hasMessages():
             await getQuotes(ctx)
-    
+
+        if message.channel.id == config["Q Channel"]:
+            guild_info.messages.append(message)
+
+            if len(message.mentions) > 0:
+                await count(ctx)
+                await updateLB(ctx)
+        
     if message.content == "yo":
         print(f"oye")
         ctx = await bot.get_context(message)
         await ctx.send("oye")
 
-    if message.channel.id == config["Q Channel"]:
-        guild_info.messages.append(message)
-        if len(message.mentions) > 0:
-            await count(ctx)
-            await updateLB(ctx)
+
 
     await bot.process_commands(message)
     return
