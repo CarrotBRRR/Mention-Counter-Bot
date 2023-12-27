@@ -116,9 +116,9 @@ async def count(ctx):
 
     print(f'Beginning Quote Count for {ctx.guild.name}...')
     for member in ctx.guild.members:
-        c = 0
-        a = 0
         if not member.bot:
+            c = 0
+            a = 0
             for message in guild_info.messages:
                 if member in message.mentions and member != message.author:
                     c += 1
@@ -127,14 +127,14 @@ async def count(ctx):
                     if member not in message.mentions:
                         a += 1
 
-        if c > 0 or a > 0:
-            # Create an object of member and counts
-            obj = {
-                "Name": str(member.name),
-                "Mentions": int(c),
-                "Authored": int(a)
-            }
-            counts.append(obj)
+            if c > 0 or a > 0:
+                # Create an object of member and counts
+                obj = {
+                    "Name": str(member.name),
+                    "Mentions": int(c),
+                    "Authored": int(a)
+                }
+                counts.append(obj)
 
     print('Finished Counting!')
 
