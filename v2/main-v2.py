@@ -16,17 +16,14 @@ intents.message_content = True
 intents.members = True
 bot = comms.Bot(command_prefix="q.", intents=intents)
 
-global guilds
-global message_buffer
-
 # ----------------------------------- Functions -----------------------------------
 # Retrieves config for ctx
 async def getConfig(ctx):
     path = f'./data/{ctx.guild.id}'
     filepath = os.path.join(path, 'ServerInfo.json')
 
-    with open(filepath) as f:
-        config = json.loads(f)
+    with open(filepath, 'r') as f:
+        config = json.load(f)
 
     return config
 
@@ -45,10 +42,8 @@ async def editConfig(ctx, config, attribute, newdata):
 # Retrieves GuildInfo Class object with matching ID
 # Creates a new GuildInfo if not found
 async def getGuildInfo(ctx):
-    print(f'Getting Guild Data for {ctx.guild}...')
     for data in guilds:
         if data.id == ctx.guild.id:
-            print('Retrieved Guild Data!')
             return data
     
     print('Could not find Guild Data, Creating...')
@@ -60,22 +55,22 @@ async def getGuildInfo(ctx):
 # Retrieves Messages from Quotes Channel and stores it in 
 # the messages attribute of GuildInfo class object
 async def getQuotes(ctx):
-    data = getGuildInfo(ctx)
-    config = getConfig(ctx)
-
-    channel = dc.utils.get(ctx.guild.channels, config["Q Channel"])
+    data = await getGuildInfo(ctx)
+    config = await getConfig(ctx)
+    print(config["Q Channel"])
+    channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
 
     print(f'Retrieving Quotes for {ctx.guild} in {channel}')
     async for message in channel.history(limit=None):
-        data.messages.append(message)
+        data.addMessage(message)
     data.messages.reverse()
     print('Quotes Retrieved!')
 
 # Retrieves Messages that Mention the specified user
 async def getMentions(ctx, member):
-    data = getGuildInfo(ctx)
-    config = getConfig(ctx)
-    channel = dc.utils.get(ctx.guild.channels, config["Q Channel"])
+    data = await getGuildInfo(ctx)
+    config = await getConfig(ctx)
+    channel = dc.utils.get(ctx.guild.channels, name=config["Q Channel"])
 
     quote = ""
     quotes = ""
@@ -95,9 +90,9 @@ async def getMentions(ctx, member):
         d.write(quotes)
 
 async def getAuthoured(ctx, member):
-    data = getGuildInfo(ctx)
-    config = getConfig(ctx)
-    channel = dc.utils.get(ctx.guild.channels, config["Q Channel"])
+    data = await getGuildInfo(ctx)
+    config = await getConfig(ctx)
+    channel = dc.utils.get(ctx.guild.channels, name=config["Q Channel"])
 
     quote = ""
     quotes = ""
@@ -119,14 +114,14 @@ async def getAuthoured(ctx, member):
 # Counts amount of times mentioned in
 # the cached messages in GuildInfo class object
 async def count(ctx):
-    guild_info = getGuildInfo(ctx)
+    guild_info = await getGuildInfo(ctx)
     counts = []
 
     print(f'Beginning Quote Count for {ctx.guild.name}...')
     for member in ctx.guild.members:
+        c = 0
+        a = 0
         if not member.bot:
-            c = 0
-            a = 0
             for message in guild_info.messages:
                 if member in message.mentions and member != message.author:
                     c += 1
@@ -142,7 +137,8 @@ async def count(ctx):
                 "Mentions": int(c),
                 "Authored": int(a)
             }
-        counts.append(obj)
+            counts.append(obj)
+
     print('Finished Counting!')
 
     print('Saving Scores...')
@@ -172,11 +168,13 @@ async def getScores(ctx):
 
     for user in users:
         # Extract Data from JSON
-        Name = user["Name"]
-        Count = int(user["Mentions"])
-        Authored = int(user["Authored"])
+        score = {
+                "Name": user["Name"],
+                "Mentions": int(user["Mentions"]),
+                "Authored": int(user["Authored"])
+            }
 
-        Scores.append([Name, Count, Authored])
+        Scores.append(score)
 
     print('Scores Retrieved!')
     
@@ -188,8 +186,8 @@ async def createLBEm(ctx):
 
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
     for user in scores:
-        em.add_field(name=f'{index}. {user[index-1][0]}',
-                        value=f'{user[index-1][1]} Quotes',
+        em.add_field(name=f'{index}. {user["Name"]}',
+                        value=f'{   user["Mentions"]} Quotes\n  {user["Authored"]} Authored',
                         inline=False)
         index += 1
     em.set_footer(text="Brought to you by: CarrotBRRR")
@@ -197,7 +195,7 @@ async def createLBEm(ctx):
     return em
 
 async def updateLB(ctx):
-    config = getConfig(ctx)
+    config = await getConfig(ctx)
     lb_channelid = int(config["LB"]["Channel ID"])
     lb_messageid = int(config["LB"]["Message ID"])
 
@@ -207,7 +205,7 @@ async def updateLB(ctx):
         channel = bot.get_channel(lb_channelid)
         lbmessage = await channel.fetch_message(lb_messageid)
        
-        em = await createLBEm()
+        em = await createLBEm(ctx)
         await lbmessage.edit(embed=em)
         print('Leaderboard Updated!')
 
@@ -224,12 +222,14 @@ async def on_ready():
         os.mkdir('./data')
 
     # Initialize an array of guilds
+    global guilds
     guilds = []
 
     for guild in bot.guilds:
 
         # Create a GuildInfo Class Object
-        guilds.append[GuildInfo(guild.name, guild.id)]
+        data = GuildInfo(guild.name, guild.id)
+        guilds.append(data)
 
         # Get Path for specific guild
         path = f'./data/{guild.id}'
@@ -252,7 +252,7 @@ async def on_ready():
 
             # Write to a File
             with open(os.path.join(path, 'ServerInfo.json'), 'w+') as f:
-                json.dumps(info, f, indent=4)
+                json.dump(info, f, indent=4)
                 
             print(f'Directory for {guild.name} initialized!')
             
@@ -260,25 +260,19 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    # Get Message Context
-    ctx = bot.get_context(message)
-
-    # Retrieve Config
-    config = getConfig(ctx)
-    guild_info = getGuildInfo(ctx)
-
-    # Retrieve Messages if no quotes in messages attribute in Guild Info
-    if len(guild_info.messages) == 0:
-        getQuotes(ctx)
-
     if not message.author.bot:
         print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
 
-    if message.content.startswith("q."):
-        print("Command Detected!")
+    # Get Message Context
+    ctx = await bot.get_context(message)
 
-        await bot.process_commands(message)
-        return
+    # Retrieve Config
+    config = await getConfig(ctx)
+    guild_info = await getGuildInfo(ctx)
+
+    # Retrieve Messages if no quotes in messages attribute in Guild Info
+    if not guild_info.hasMessages():
+        await getQuotes(ctx)
     
     if message.content == "yo":
         print(f"{message.content}\noye")
@@ -303,7 +297,7 @@ async def on_message(message):
 async def random(ctx):
     print("Getting a random quote...")
     # Get List of Quotes for Guild
-    data = getGuildInfo(ctx)
+    data = await getGuildInfo(ctx)
     messages = data.messages
 
     # Choose a quote
@@ -335,7 +329,7 @@ async def random(ctx):
     em.set_footer(text='Truly Words of Wisdom...')
     print('Sending Random Quote Embed!')
 
-    await ctx.send(embed = att_ems)
+    await ctx.send(embeds=att_ems)
 
 # Retrieve Quotes of Specified User
 @bot.command()

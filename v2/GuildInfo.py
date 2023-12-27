@@ -6,3 +6,9 @@ class GuildInfo:
 
     def addMessage(self, message):
         self.messages.append(message)
+
+    def hasMessages(self):
+        if len(self.messages) >= 1:
+            return True
+        else:
+            return False
