@@ -408,9 +408,12 @@ async def setQChannel(ctx):
     if len(ctx.message.channel_mentions) == 1:
         print("Setting up default channel...")
 
-        config = getConfig(ctx)
+        config = await getConfig(ctx)
         editConfig(ctx, config, "Q Channel", ctx.message.raw_channel_mentions)
-        print(f'Q Channel for {ctx.guild.id} is now {bot.get_channel(config["Q Channel"])}')
+
+        channel = bot.get_channel(config["Q Channel"])
+
+        print(f'Q Channel for {ctx.guild.id} is now {channel}')
 
     else: 
         print("invalid number of channels")
@@ -422,7 +425,7 @@ async def setQChannel(ctx):
 async def initLB(ctx):
     em = await createLBEm()
     lb = await ctx.send(embed=em)
-    config = getConfig(ctx)
+    config = await getConfig(ctx)
     lbobj = {
         "Channel ID" : int(lb.get_channel().id),
         "Message ID" : int(lb.id)
