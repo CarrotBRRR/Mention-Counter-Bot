@@ -337,11 +337,11 @@ async def random(ctx):
 
     # Get Link to original quote
 
-    print(f'discordapp.com/channels/{data.id}/{message.channel}/{message.id}')
+    print(f'discordapp.com/channels/{data.id}/{message.channel.id}/{message.id}')
 
     # Prepare the Embed
     print('Preparing Embed...')
-    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{message.channel}/{message.id}')
+    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{message.channel.id}/{message.id}')
     em.add_field(name=quote, value = "")
 
     att_ems = []
