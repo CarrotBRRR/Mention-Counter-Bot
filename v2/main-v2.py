@@ -108,7 +108,7 @@ async def getAuthoured(ctx, member):
 
     print(f'All quotes by author {member.name} Found!')
 
-    with open(f'./data/{ctx.guild}/dump.txt', 'w+', encoding='utf-8') as f:
+    with open(f'./data/{ctx.guild.id}/dump.txt', 'w+', encoding='utf-8') as f:
         f.write(quotes)
 
 # Counts amount of times mentioned in
