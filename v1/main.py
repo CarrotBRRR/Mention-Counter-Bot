@@ -308,7 +308,6 @@ async def author(ctx):
 async def authour(ctx):
   await author(ctx)
 
-
 @bot.command()
 async def commands(ctx):
   em = dc.Embed(title="Command List:")

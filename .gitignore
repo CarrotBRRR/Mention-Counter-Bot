@@ -5,3 +5,4 @@
 
 # Folders to Ignore
 data/
+__pycache__/
