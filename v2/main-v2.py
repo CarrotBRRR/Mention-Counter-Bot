@@ -56,11 +56,14 @@ async def getQuotes(ctx):
     data = await getGuildInfo(ctx)
     config = await getConfig(ctx)
     channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
-
+    messages = []
     print(f'Retrieving Quotes for {ctx.guild} in {channel}')
     async for message in channel.history(limit=None):
-        data.addMessage(message)
-    data.messages.reverse()
+        messages.append(message)
+    messages.reverse()
+
+    data.setMessages(messages)
+
     print('Quotes Retrieved!')
 
 # Retrieves Messages that Mention the specified user

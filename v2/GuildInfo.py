@@ -4,6 +4,9 @@ class GuildInfo:
         self.id = int(id)
         self.messages = []
 
+    def setMessages(self, messages):
+        self.messages = messages
+
     def addMessage(self, message):
         self.messages.append(message)
 
