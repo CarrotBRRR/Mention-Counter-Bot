@@ -271,7 +271,7 @@ async def on_message(message):
     guild_info = await getGuildInfo(ctx)
 
     # Retrieve Messages if no quotes in messages attribute in Guild Info
-    if not guild_info.hasMessages():
+    if config["Q Channel"] != 0 and not guild_info.hasMessages():
         await getQuotes(ctx)
     
     if message.content == "yo":
