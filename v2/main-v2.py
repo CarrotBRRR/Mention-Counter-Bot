@@ -419,6 +419,8 @@ async def setQChannel(ctx):
 @bot.command()
 @comms.has_permissions(administrator=True)
 async def initLB(ctx):
+    await getQuotes(ctx)
+    await count(ctx)
     em = await createLBEm(ctx)
     lb = await ctx.send(embed=em)
     config = await getConfig(ctx)
