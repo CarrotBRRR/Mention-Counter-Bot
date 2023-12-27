@@ -323,6 +323,7 @@ async def random(ctx):
     print("Getting a random quote...")
     # Get List of Quotes for Guild
     data = await getGuildInfo(ctx)
+    config = await getConfig(ctx)
     messages = data.messages
 
     # Choose a quote
@@ -335,11 +336,12 @@ async def random(ctx):
     print('Got a Random Quote!')
 
     # Get Link to original quote
-    print(f'discordapp.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
+
+    print(f'discordapp.com/channels/{data.id}/{message.channel}/{message.id}')
 
     # Prepare the Embed
     print('Preparing Embed...')
-    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{os.getenv("qChannelID")}/{message.id}')
+    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{message.channel}/{message.id}')
     em.add_field(name=quote, value = "")
 
     att_ems = []
