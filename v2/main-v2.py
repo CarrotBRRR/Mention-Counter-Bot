@@ -91,8 +91,30 @@ async def getMentions(ctx, member):
 
     print('All mentions Found!')
     
-    with open(f'./data/{ctx.guild}/dump.txt', 'w+') as d:
+    with open(f'./data/{ctx.guild}/dump.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
+
+async def getAuthoured(ctx, member):
+    data = getGuildInfo(ctx)
+    config = getConfig(ctx)
+    channel = dc.utils.get(ctx.guild.channels, config["Q Channel"])
+
+    quote = ""
+    quotes = ""
+    print(f'Searching for Author {member.name} in {channel}...')
+
+    for message in data.messages:
+        if member == message.author and len(message.mentions) >= 1:
+            quote = str(message.content)
+            for mentioned in message.mentions:
+                quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+            
+            quotes += quote + "\n\n"
+
+    print(f'All quotes by author {member.name} Found!')
+
+    with open(f'./data/{ctx.guild}/dump.txt', 'w+', encoding='utf-8') as f:
+        f.write(quotes)
 
 # Counts amount of times mentioned in
 # the cached messages in GuildInfo class object
@@ -258,6 +280,14 @@ async def on_message(message):
         await bot.process_commands(message)
         return
     
+    if message.content == "yo":
+        print(f"{message.content}\noye")
+        ctx = await bot.get_context(message)
+        await ctx.send("oye")
+
+        await bot.process_commands(message)
+        return
+
     if message.channel.id == config["Q Channel"]:
         guild_info.messages.append(message)
         if len(message.mentions) > 0:
@@ -307,6 +337,7 @@ async def random(ctx):
 
     await ctx.send(embed = att_ems)
 
+# Retrieve Quotes of Specified User
 @bot.command()
 async def quotes(ctx):
     user = []
@@ -317,8 +348,27 @@ async def quotes(ctx):
         return
     else:
         await getMentions(ctx, user[0])
-        with open(f'./data/{ctx.guild}/dump.txt', 'r') as d:
-            await ctx.message.author.send(f"Here is the quotes of {user[0]}: ", file=dc.File(d))
+        dump_path = f'./data/{ctx.guild}/dump.txt'
+        await ctx.message.author.send(f"Here are the quotes of {user[0]}: ", file=dc.File(dump_path))
+
+# Retrieve Quotes Authored by Specified User
+@bot.command()
+async def authour(ctx):
+    user = []
+    user = ctx.message.mentions
+
+    if len(user) != 1:
+        await ctx.send('Invalid Number of Users...\n**Usage:** q.authour @user')
+        return
+    else:
+        await getAuthoured(ctx, user[0])
+        dump_path = f'./data/{ctx.guild}/dump.txt'
+        await ctx.message.author.send(f"Here are the quotes authored by {user[0]}: ", file=dc.File(dump_path))
+
+# For people from the USA
+@bot.command()
+async def author(ctx):
+    await authour(ctx)
 
 # Funny Joke Command
 @bot.command()
@@ -358,6 +408,15 @@ async def initLB(ctx):
     editConfig(ctx, config, "LB", lbobj)
 
     await ctx.send(embed=em)
+
+@bot.command()
+@comms.has_guild_permissions(administrator=True)
+async def refresh(ctx):
+    print(f"Refreshing Leaderboard for {ctx.guild.name} Manually...")
+    await getQuotes(ctx)
+    await count(ctx)
+    await updateLB(ctx)
+    print("Leaderboard Manually Refreshed!")
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
