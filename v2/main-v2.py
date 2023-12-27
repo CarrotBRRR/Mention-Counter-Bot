@@ -405,7 +405,7 @@ async def bingchilling(ctx):
 @bot.command()
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx):
-    if len(ctx.message.channel_mentions == 1):
+    if len(ctx.message.channel_mentions) == 1:
         print("Setting up default channel...")
 
         config = getConfig(ctx)
