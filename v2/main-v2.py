@@ -228,7 +228,7 @@ async def on_ready():
         guilds.append(data)
 
         # Get Path for specific guild
-        filepath = f'./data/{guild.id}/ServerInfo.json'
+        filepath = f'./data/{guild.id}'
 
         # Set-up Directory and Config
         if not os.path.exists(filepath):
@@ -247,7 +247,7 @@ async def on_ready():
             }
 
             # Write to a File
-            with open(filepath, 'w+') as f:
+            with open(f'{filepath}/ServerInfo.json', 'w+') as f:
                 json.dump(info, f, indent=4)
                 
             print(f'Directory for {guild.name} initialized!')
