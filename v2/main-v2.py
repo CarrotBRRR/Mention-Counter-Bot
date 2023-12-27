@@ -261,24 +261,22 @@ async def on_message(message):
     if not message.author.bot:
         print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
 
-    # Get Message Context
-    ctx = await bot.get_context(message)
+    if ctx.guild is not None:
+        # Get Message Context
+        ctx = await bot.get_context(message)
 
-    # Retrieve Config
-    config = await getConfig(ctx)
-    guild_info = await getGuildInfo(ctx)
+        # Retrieve Config
+        config = await getConfig(ctx)
+        guild_info = await getGuildInfo(ctx)
 
-    # Retrieve Messages if no quotes in messages attribute in Guild Info
-    if config["Q Channel"] != 0 and not guild_info.hasMessages():
-        await getQuotes(ctx)
+        # Retrieve Messages if no quotes in messages attribute in Guild Info
+        if config["Q Channel"] != 0 and not guild_info.hasMessages():
+            await getQuotes(ctx)
     
     if message.content == "yo":
         print(f"oye")
         ctx = await bot.get_context(message)
         await ctx.send("oye")
-
-        await bot.process_commands(message)
-        return
 
     if message.channel.id == config["Q Channel"]:
         guild_info.messages.append(message)
@@ -326,7 +324,6 @@ async def random(ctx):
     print("Getting a random quote...")
     # Get List of Quotes for Guild
     data = await getGuildInfo(ctx)
-    config = await getConfig(ctx)
     messages = data.messages
 
     # Choose a quote
@@ -339,7 +336,6 @@ async def random(ctx):
     print('Got a Random Quote!')
 
     # Get Link to original quote
-
     print(f'discordapp.com/channels/{data.id}/{message.channel.id}/{message.id}')
 
     # Prepare the Embed
