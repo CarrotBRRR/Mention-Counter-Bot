@@ -185,7 +185,7 @@ async def createLBEm(ctx):
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
     for user in scores:
         em.add_field(name=f'{index}. {user["Name"]}',
-                        value=f'{   user["Mentions"]} Quotes\n  {user["Authored"]} Authored',
+                        value=f'   {user["Mentions"]} Quotes\n   {user["Authored"]} Authored',
                         inline=False)
         index += 1
     em.set_footer(text="Brought to you by: CarrotBRRR")
@@ -282,8 +282,6 @@ async def on_message(message):
         print(f"oye")
         ctx = await bot.get_context(message)
         await ctx.send("oye")
-
-
 
     await bot.process_commands(message)
     return
