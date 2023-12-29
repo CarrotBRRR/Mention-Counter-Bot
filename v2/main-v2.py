@@ -57,7 +57,7 @@ async def getQuotes(ctx):
     config = await getConfig(ctx)
     channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
     messages = []
-    print(f'Retrieving Quotes for {ctx.guild} in {channel}')
+    print(f'Retrieving Quotes for {ctx.guild} in {channel.name}')
     async for message in channel.history(limit=None):
         messages.append(message)
     messages.reverse()
@@ -74,7 +74,7 @@ async def getMentions(ctx, member):
 
     quote = ""
     quotes = ""
-    print(f'Searching for mentions of {member.name} in {channel}...')
+    print(f'Searching for mentions of {member.name} in {channel.name}...')
 
     for message in data.messages:
         if member in message.mentions:
@@ -96,7 +96,7 @@ async def getAuthoured(ctx, member):
 
     quote = ""
     quotes = ""
-    print(f'Searching for Author {member.name} in {channel}...')
+    print(f'Searching for Author {member.name} in {channel.name}...')
 
     for message in data.messages:
         if member == message.author and len(message.mentions) >= 1:
