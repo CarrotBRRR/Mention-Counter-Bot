@@ -68,13 +68,12 @@ async def getQuotes(ctx):
 
 # Retrieves Messages that Mention the specified user
 async def getMentions(ctx, member):
-    data = await getGuildInfo(ctx)
-    config = await getConfig(ctx)
-    channel = dc.utils.get(ctx.guild.channels, name=config["Q Channel"])
-
     quote = ""
     quotes = ""
-    print(f'Searching for mentions of {member.name} in {channel.name}...')
+
+    data = await getGuildInfo(ctx)
+
+    print(f'Searching for mentions of {member.name} in cache of {ctx.guild}...')
 
     for message in data.messages:
         if member in message.mentions:
@@ -90,13 +89,12 @@ async def getMentions(ctx, member):
         d.write(quotes)
 
 async def getAuthoured(ctx, member):
-    data = await getGuildInfo(ctx)
-    config = await getConfig(ctx)
-    channel = dc.utils.get(ctx.guild.channels, name=config["Q Channel"])
-
     quote = ""
     quotes = ""
-    print(f'Searching for Author {member.name} in {channel.name}...')
+    
+    data = await getGuildInfo(ctx)
+
+    print(f'Searching for Author {member.name} in cache of {ctx.guild}...')
 
     for message in data.messages:
         if member == message.author and len(message.mentions) >= 1:
