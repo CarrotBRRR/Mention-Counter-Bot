@@ -285,6 +285,11 @@ async def on_message(message):
     return
 
 @bot.event
+async def on_message_edit(m_before, m_after):
+    if not m_before.author.bot:
+        print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited: {m_before.content}\n   -> {m_after.content}')
+
+@bot.event
 async def on_guild_join(guild):
     data = GuildInfo(guild.name, guild.id)
     guilds.append(data)
