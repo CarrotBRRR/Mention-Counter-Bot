@@ -183,7 +183,7 @@ async def createLBEm(ctx):
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
     for user in scores:
         em.add_field(name=f'{index}. {user["Name"]}',
-                        value=f'   {user["Mentions"]} Quotes\n   {user["Authored"]} Authored',
+                        value=f'| {user["Mentions"]} Quotes\n| {user["Authored"]} Authored',
                         inline=False)
         index += 1
     em.set_footer(text="Brought to you by: CarrotBRRR")
@@ -257,7 +257,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if not message.author.bot:
-        print(f'[{message.guild}] ({message.channel}) {message.author}: {message.content}')
+        print(f'[{message.guild}] ({message.channel}) {message.author}:\n   {message.content}')
 
     ctx = await bot.get_context(message)
     if ctx.guild is not None:
@@ -287,7 +287,7 @@ async def on_message(message):
 @bot.event
 async def on_message_edit(m_before, m_after):
     if not m_before.author.bot:
-        print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited: {m_before.content}\n   -> {m_after.content}')
+        print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {m_before.content}\n   -> {m_after.content}')
 
 @bot.event
 async def on_guild_join(guild):
@@ -391,6 +391,18 @@ async def authour(ctx):
 @bot.command()
 async def author(ctx):
     await authour(ctx)
+
+# Make the bot say something
+# Usage: q.say #channel #channel2 "message"
+@bot.command()
+async def say(ctx):
+    if len(ctx.message.raw_channel_mentions) >= 1:
+        sayload = f'{ctx.message.content}'.replace('q.say ', '')
+        for channel in ctx.message.raw_channel_mentions:
+            sayload.replace(f'<#{ctx.message.channel}>', '')
+        
+        for channel in ctx.message.raw_channel_mentions:
+            channel.send(f'{sayload}')
 
 # Funny Joke Command
 @bot.command()
