@@ -399,9 +399,7 @@ async def say(ctx):
     if len(ctx.message.raw_channel_mentions) >= 1:
         sayload = f'{ctx.message.content}'.replace('q.say ', '')
         for channel in ctx.message.raw_channel_mentions:
-            print(f'<#{ctx.message.channel}>')
-            sayload.replace(f'<#{ctx.message.channel}>', '')
-            print(sayload)
+            sayload.replace(f'<#{ctx.message.channel.id}>', '')
         
         for raw_channel in ctx.message.raw_channel_mentions:
             channel = dc.utils.get(ctx.guild.channels, id=raw_channel)
