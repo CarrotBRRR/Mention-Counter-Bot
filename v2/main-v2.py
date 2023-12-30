@@ -401,7 +401,8 @@ async def say(ctx):
         for channel in ctx.message.raw_channel_mentions:
             sayload.replace(f'<#{ctx.message.channel}>', '')
         
-        for channel in ctx.message.raw_channel_mentions:
+        for raw_channel in ctx.message.raw_channel_mentions:
+            channel = ctx.get_channel(raw_channel)
             channel.send(f'{sayload}')
 
 # Funny Joke Command
