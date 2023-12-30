@@ -401,7 +401,7 @@ async def say(ctx):
         print(sayload)
         for channel in ctx.message.raw_channel_mentions:
             print(f'<#{ctx.message.channel.id}>')
-            sayload.replace(f'<#{ctx.message.channel.id}>', '')
+            sayload = sayload.replace(f'<#{ctx.message.channel.id}>', '')
             print(sayload)
         
         for raw_channel in ctx.message.raw_channel_mentions:
