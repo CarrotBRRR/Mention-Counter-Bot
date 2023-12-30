@@ -324,6 +324,7 @@ async def on_guild_join(guild):
 @bot.command()
 async def random(ctx):
     print("Getting a random quote...")
+    
     # Get List of Quotes for Guild
     data = await getGuildInfo(ctx)
     messages = data.messages
@@ -335,6 +336,7 @@ async def random(ctx):
     # Replace User IDs with username
     for mentioned in message.mentions:
         quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+
     print('Got a Random Quote!')
 
     # Get Link to original quote
@@ -342,7 +344,8 @@ async def random(ctx):
 
     # Prepare the Embed
     print('Preparing Embed...')
-    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, url=f'https://discord.com/channels/{data.id}/{message.channel.id}/{message.id}')
+    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
+                  url=f'https://discord.com/channels/{data.id}/{message.channel.id}/{message.id}')
     em.add_field(name=quote, value = "")
 
     att_ems = []
@@ -368,6 +371,7 @@ async def quotes(ctx):
     if len(user) != 1:
         await ctx.send('Invalid Number of Users...\n**Usage:** q.quotes @user')
         return
+    
     else:
         await getMentions(ctx, user[0])
         dump_path = f'./data/{ctx.guild.id}/dump.txt'
@@ -382,6 +386,7 @@ async def authour(ctx):
     if len(user) != 1:
         await ctx.send('Invalid Number of Users...\n**Usage:** q.authour @user')
         return
+    
     else:
         await getAuthoured(ctx, user[0])
         dump_path = f'./data/{ctx.guild.id}/dump.txt'
@@ -398,6 +403,7 @@ async def author(ctx):
 async def say(ctx):
     if len(ctx.message.raw_channel_mentions) >= 1:
         sayload = f'{ctx.message.content}'.replace('q.say ', '')
+
         for channel in ctx.message.raw_channel_mentions:
             sayload = sayload.replace(f'<#{channel}>', '')
         
@@ -436,9 +442,11 @@ async def setQChannel(ctx):
 async def initLB(ctx):
     await getQuotes(ctx)
     await count(ctx)
+
+    config = await getConfig(ctx)
     em = await createLBEm(ctx)
     lb = await ctx.send(embed=em)
-    config = await getConfig(ctx)
+
     lbobj = {
         "Channel ID" : int(lb.channel.id),
         "Message ID" : int(lb.id)
@@ -450,9 +458,11 @@ async def initLB(ctx):
 @comms.has_guild_permissions(administrator=True)
 async def refresh(ctx):
     print(f"Refreshing Leaderboard for {ctx.guild.name} Manually...")
+
     await getQuotes(ctx)
     await count(ctx)
     await updateLB(ctx)
+
     print("Leaderboard Manually Refreshed!")
 
 bot.remove_command('help')
