@@ -403,7 +403,7 @@ async def say(ctx):
         
         for raw_channel in ctx.message.raw_channel_mentions:
             channel = dc.utils.get(ctx.guild.channels, id=raw_channel)
-            channel.send(f'{sayload}')
+            await channel.send(f'{sayload}')
 
 # Funny Joke Command
 @bot.command()
