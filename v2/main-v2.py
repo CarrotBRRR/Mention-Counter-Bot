@@ -500,6 +500,15 @@ async def refresh(ctx):
     print("Leaderboard Manually Refreshed!")
 
 
+# -------------------------------- Owner Commands ---------------------------------
+@bot.command(description="Turns off bot (bat restart)")
+@comms.is_owner()
+async def stop(ctx: comms.Context):
+    print("Shutting down...")
+    await bot.close()
+    print("Goodbye!")
+
+
 @bot.command(description="sync all global commands")
 @comms.is_owner()
 async def sync(ctx: comms.Context):
