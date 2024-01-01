@@ -369,7 +369,7 @@ async def random(ctx):
 # Retrieve Quotes of Specified User
 @bot.hybrid_command(
     name="quotes",
-    description="Usage: /quotes @user\nGet all quotes from @user"
+    description="Get all quotes from @user. Usage: /quotes @user"
 )
 async def quotes(ctx):
     user = []
@@ -387,7 +387,7 @@ async def quotes(ctx):
 # Retrieve Quotes Authored by Specified User
 @bot.hybrid_command(
     name="authour",
-    description="Usage: /authour @user\nGet all quotes authoured by @user"
+    description="Get all quotes authoured by @user. Usage: /authour @user"
 )
 async def authour(ctx):
     user = []
@@ -431,8 +431,11 @@ async def bingchilling(ctx):
 
 # -------------------------------- Admin Commands ---------------------------------
 # Command to set q channel
-# Usage: q.setQChannel [channel ID]
-@bot.command()
+# Usage: q.setQChannel #channel
+@bot.hybrid_command(
+    name="initlb",
+    description="(Admin Only) Set the channel to the specified #channel"
+)
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx):
     if len(ctx.message.channel_mentions) == 1:
@@ -446,11 +449,15 @@ async def setQChannel(ctx):
         print(f'Q Channel for {ctx.guild.name} is now {channel}')
 
     else: 
+        ctx.send("invalid number of channels")
         print("invalid number of channels")
 
 # Command to initialize leaderboard
 # Usage: q.initLB
-@bot.command()
+@bot.hybrid_command(
+    name="initlb",
+    description="(Admin Only) Create or Overwrite the Leaderboard"
+)
 @comms.has_permissions(administrator=True)
 async def initLB(ctx):
     await getQuotes(ctx)
@@ -467,7 +474,10 @@ async def initLB(ctx):
 
     await editConfig(ctx, config, "LB", lbobj)
 
-@bot.command()
+@bot.hybrid_command(
+    name="refresh",
+    description="(Admin Only) Manually Refresh the Leaderboard and Scores"
+)
 @comms.has_guild_permissions(administrator=True)
 async def refresh(ctx):
     print(f"Refreshing Leaderboard for {ctx.guild.name} Manually...")
@@ -481,7 +491,7 @@ async def refresh(ctx):
 
 @bot.command(description="sync all global commands")
 @comms.is_owner()
-async def syncslash(ctx: comms.Context):
+async def sync(ctx: comms.Context):
     try:
       print("Sycning tree...")
       await bot.tree.sync()
