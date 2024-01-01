@@ -295,7 +295,6 @@ async def on_interaction(interaction):
 
         if config["Q Channel"] != 0 and not guild_info.hasMessages():
             await getQuotes(ctx)
-    await bot.process_commands(interaction.message)
 
 @bot.event
 async def on_message(message):
@@ -502,6 +501,11 @@ async def refresh(ctx):
 
 
 # -------------------------------- Owner Commands ---------------------------------
+@bot.command(description="Initialize stack data")
+@comms.is_owner()
+async def start(ctx):
+    ctx.send("This command currently does nothing.")
+
 @bot.command(description="Turns off bot (bat restart)")
 @comms.is_owner()
 async def stop(ctx: comms.Context):
