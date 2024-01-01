@@ -256,6 +256,47 @@ async def on_ready():
     print(f'Bot connected as {bot.user}')
 
 @bot.event
+async def on_guild_join(guild):
+    data = GuildInfo(guild.name, guild.id)
+    guilds.append(data)
+
+    # Get Path for specific guild
+    filepath = f'./data/{guild.id}'
+
+    # Set-up Directory and Config
+    if not os.path.exists(filepath):
+        print(f'Setting up Directory for {guild.name}...')
+        os.mkdir(filepath)
+
+        # Set-up Default Config JSON
+        info = {
+            "Name" : str(guild.name),
+            "Guild ID" : int(guild.id),
+            "Q Channel" : int(0),
+            "LB" : {
+                "Channel ID" : int(0),
+                "Message ID" : int(0)
+            }
+        }
+
+        # Write to a File
+        with open(f'{filepath}/ServerInfo.json', 'w+') as f:
+            json.dump(info, f, indent=4)
+            
+        print(f'Directory for {guild.name} initialized!')
+
+@bot.event
+async def on_interaction(interaction):
+    if interaction.guild is not None:
+        # Retrieve Config
+        ctx = await bot.get_context(interaction)
+        config = await getConfig(ctx)
+        guild_info = await getGuildInfo(ctx)
+
+        if config["Q Channel"] != 0 and not guild_info.hasMessages():
+            await getQuotes(ctx)
+
+@bot.event
 async def on_message(message):
     if not message.author.bot:
         print(f'[{message.guild}] ({message.channel}) {message.author}:\n   {message.content}')
@@ -289,47 +330,6 @@ async def on_message(message):
 async def on_message_edit(m_before, m_after):
     if not m_before.author.bot:
         print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {m_before.content}\n   -> {m_after.content}')
-
-@bot.event
-async def on_interaction(interaction):
-    if interaction.guild is not None:
-        # Retrieve Config
-        ctx = await bot.get_context(interaction)
-        config = await getConfig(ctx)
-        guild_info = await getGuildInfo(ctx)
-
-        if config["Q Channel"] != 0 and not guild_info.hasMessages():
-            await getQuotes(ctx)
-            
-@bot.event
-async def on_guild_join(guild):
-    data = GuildInfo(guild.name, guild.id)
-    guilds.append(data)
-
-    # Get Path for specific guild
-    path = f'./data/{guild.id}'
-
-    # Set-up Directory and Config
-    if not os.path.exists(path):
-        print(f'Setting up Directory for {guild.name}...')
-        os.mkdir(path)
-
-        # Set-up Default Config JSON
-        info = {
-            "Name" : str(guild.name),
-            "Guild ID" : int(guild.id),
-            "Q Channel" : int(0),
-            "LB" : {
-                "Channel ID" : int(0),
-                "Message ID" : int(0)
-            }
-        }
-
-        # Write to a File
-        with open(os.path.join(path, 'ServerInfo.json'), 'w+') as f:
-            json.dump(info, f, indent=4)
-            
-        print(f'Directory for {guild.name} initialized!')
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
