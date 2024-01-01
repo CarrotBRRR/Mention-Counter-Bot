@@ -304,7 +304,12 @@ async def on_message(message):
     ctx = await bot.get_context(message)
     if ctx.guild is not None:
         # Retrieve Config
-        config = await getConfig(ctx)
+        try:
+            config = await getConfig(ctx)
+        except FileNotFoundError:
+            print("Directory not initialized.")
+            return
+        
         guild_info = await getGuildInfo(ctx)
 
         # Retrieve Messages if no quotes in messages attribute in Guild Info
