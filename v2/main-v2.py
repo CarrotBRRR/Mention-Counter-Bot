@@ -291,6 +291,17 @@ async def on_message_edit(m_before, m_after):
         print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {m_before.content}\n   -> {m_after.content}')
 
 @bot.event
+async def on_interaction(interaction):
+    if interaction.guild is not None:
+        # Retrieve Config
+        ctx = await bot.get_context(interaction)
+        config = await getConfig(ctx)
+        guild_info = await getGuildInfo(ctx)
+
+        if config["Q Channel"] != 0 and not guild_info.hasMessages():
+            await getQuotes(ctx)
+            
+@bot.event
 async def on_guild_join(guild):
     data = GuildInfo(guild.name, guild.id)
     guilds.append(data)
