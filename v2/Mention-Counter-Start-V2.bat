@@ -1,5 +1,5 @@
 @echo off
-echo Checking for updates...
+echo ----------------- Checking for Updates ----------------
 git pull origin main
 echo --------------------- Starting Up ---------------------
 python3.11.exe ./main-v2.py
