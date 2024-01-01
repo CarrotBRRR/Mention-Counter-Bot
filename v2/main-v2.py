@@ -386,7 +386,7 @@ async def quotes(ctx):
 
 # Retrieve Quotes Authored by Specified User
 @bot.hybrid_command(
-    name="Authour",
+    name="authour",
     description="Usage: /authour @user\nGet all quotes authoured by @user"
 )
 async def authour(ctx):
@@ -404,7 +404,7 @@ async def authour(ctx):
 
 # For people from the USA
 @bot.hybrid_command(
-    name="Authour",
+    name="author",
     description="Same as /authour, but for people from the USA"
 )
 async def author(ctx):
