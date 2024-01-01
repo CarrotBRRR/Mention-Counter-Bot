@@ -484,5 +484,18 @@ async def refresh(ctx):
 
     print("Leaderboard Manually Refreshed!")
 
+
+@bot.command(description="sync all global commands")
+@comms.is_owner()
+async def syncslash(ctx: comms.Context):
+  if ctx.author.id == os.getenv('BOTOWNERID'):
+    try:
+      await bot.tree.sync()
+      print("Synced")
+    except dc.Forbidden:
+      await ctx.send("Unexpected forbidden from application scope.")
+  else:
+    await ctx.send("You must be the owner to use this command")
+
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
