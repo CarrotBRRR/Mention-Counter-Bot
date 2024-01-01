@@ -433,8 +433,8 @@ async def bingchilling(ctx):
 # Command to set q channel
 # Usage: q.setQChannel #channel
 @bot.hybrid_command(
-    name="initlb",
-    description="(Admin Only) Set the channel to the specified #channel"
+    name="setqchannel",
+    description="(Admin Only) Set the channel to a specified #channel"
 )
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx):
