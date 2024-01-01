@@ -2,6 +2,8 @@ import os, json
 import operator as op
 import random as rand
 import discord as dc
+
+from discord import app_commands
 from discord.ext import commands as comms
 from discord.utils import get
 from dotenv import load_dotenv
@@ -15,6 +17,7 @@ intents = dc.Intents.default()
 intents.message_content = True
 intents.members = True
 bot = comms.Bot(command_prefix="q.", intents=intents)
+tree = app_commands.CommandTree(bot)
 
 # ----------------------------------- Functions -----------------------------------
 # Retrieves config for ctx
@@ -183,7 +186,7 @@ async def createLBEm(ctx):
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
     for user in scores:
         em.add_field(name=f'{index}. {user["Name"]}',
-                        value=f'| {user["Mentions"]} Quotes\n| {user["Authored"]} Authored',
+                        value=f'> {user["Mentions"]} Quotes\n> {user["Authored"]} Authored',
                         inline=False)
         index += 1
     em.set_footer(text="Brought to you by: CarrotBRRR")
@@ -322,6 +325,10 @@ async def on_guild_join(guild):
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
 @bot.command()
+@tree.command(
+    name="random",
+    description="Get a random quote from the quote channel!"
+)
 async def random(ctx):
     print("Getting a random quote...")
     
@@ -364,6 +371,10 @@ async def random(ctx):
 
 # Retrieve Quotes of Specified User
 @bot.command()
+@tree.command(
+    name="quotes",
+    description="Usage: /quotes @user\nGet all quotes from @user"
+)
 async def quotes(ctx):
     user = []
     user = ctx.message.mentions
@@ -379,6 +390,10 @@ async def quotes(ctx):
 
 # Retrieve Quotes Authored by Specified User
 @bot.command()
+@tree.command(
+    name="Authour",
+    description="Usage: /authour @user\nGet all quotes authoured by @user"
+)
 async def authour(ctx):
     user = []
     user = ctx.message.mentions
@@ -394,6 +409,10 @@ async def authour(ctx):
 
 # For people from the USA
 @bot.command()
+@tree.command(
+    name="Authour",
+    description="Same as /authour, but for people from the USA"
+)
 async def author(ctx):
     await authour(ctx)
 
