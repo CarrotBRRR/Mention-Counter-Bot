@@ -429,16 +429,19 @@ async def author(ctx):
 # Make the bot say something
 # Usage: q.say #channel #channel2 "message"
 @bot.command()
-async def say(ctx):
+async def say(ctx, channel, *args):
     if len(ctx.message.raw_channel_mentions) >= 1:
         sayload = f'{ctx.message.content}'.replace('q.say ', '')
 
-        for channel in ctx.message.raw_channel_mentions:
-            sayload = sayload.replace(f'<#{channel}>', '')
+        # for channel in ctx.message.raw_channel_mentions:
+        #     sayload = sayload.replace(f'<#{channel}>', '')
         
-        for raw_channel in ctx.message.raw_channel_mentions:
-            channel = dc.utils.get(ctx.guild.channels, id=raw_channel)
-            await channel.send(f'{sayload}')
+        # for raw_channel in ctx.message.raw_channel_mentions:
+        #     channel = dc.utils.get(ctx.guild.channels, id=raw_channel)
+        #     await channel.send(f'{sayload}')
+
+        sayload = ' '.join(args)
+        await channel.send(f'{sayload}')
 
 # Funny Joke Command
 @bot.command()
