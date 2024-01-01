@@ -482,14 +482,12 @@ async def refresh(ctx):
 @bot.command(description="sync all global commands")
 @comms.is_owner()
 async def syncslash(ctx: comms.Context):
-  if ctx.author.id == os.getenv('BOTOWNERID'):
     try:
+      print("Sycning tree...")
       await bot.tree.sync()
       print("Synced")
     except dc.Forbidden:
       await ctx.send("Unexpected forbidden from application scope.")
-  else:
-    await ctx.send("You must be the owner to use this command")
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
