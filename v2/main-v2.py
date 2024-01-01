@@ -295,6 +295,7 @@ async def on_interaction(interaction):
 
         if config["Q Channel"] != 0 and not guild_info.hasMessages():
             await getQuotes(ctx)
+    await bot.process_commands(interaction.message)
 
 @bot.event
 async def on_message(message):
