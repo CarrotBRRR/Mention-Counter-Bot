@@ -3,7 +3,6 @@ import operator as op
 import random as rand
 import discord as dc
 
-from discord import app_commands
 from discord.ext import commands as comms
 from discord.utils import get
 from dotenv import load_dotenv
@@ -17,7 +16,6 @@ intents = dc.Intents.default()
 intents.message_content = True
 intents.members = True
 bot = comms.Bot(command_prefix="q.", intents=intents)
-tree = app_commands.CommandTree(bot)
 
 # ----------------------------------- Functions -----------------------------------
 # Retrieves config for ctx
@@ -324,8 +322,7 @@ async def on_guild_join(guild):
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
-@bot.command()
-@tree.command(
+@bot.hybrid_command(
     name="random",
     description="Get a random quote from the quote channel!"
 )
@@ -370,8 +367,7 @@ async def random(ctx):
     await ctx.send(embeds=att_ems)
 
 # Retrieve Quotes of Specified User
-@bot.command()
-@tree.command(
+@bot.hybrid_command(
     name="quotes",
     description="Usage: /quotes @user\nGet all quotes from @user"
 )
@@ -389,8 +385,7 @@ async def quotes(ctx):
         await ctx.message.author.send(f"Here are the quotes of {user[0]}: ", file=dc.File(dump_path))
 
 # Retrieve Quotes Authored by Specified User
-@bot.command()
-@tree.command(
+@bot.hybrid_command(
     name="Authour",
     description="Usage: /authour @user\nGet all quotes authoured by @user"
 )
@@ -408,8 +403,7 @@ async def authour(ctx):
         await ctx.message.author.send(f"Here are the quotes authored by {user[0]}: ", file=dc.File(dump_path))
 
 # For people from the USA
-@bot.command()
-@tree.command(
+@bot.hybrid_command(
     name="Authour",
     description="Same as /authour, but for people from the USA"
 )
