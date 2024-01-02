@@ -557,16 +557,21 @@ async def go(ctx: comms.Context):
                     with open(filepath, 'r') as f:
                         config = json.load(f)
 
-                    channel = dc.utils.get(guild.channels, id=config["Q Channel"])
-                    messages = []
+                    if config["Q Channel"] != 0:
+                        channel = dc.utils.get(guild.channels, id=config["Q Channel"])
+                        messages = []
 
-                    print(f'Retrieving Quotes for {guild} in {channel.name}')
-                    
-                    async for message in channel.history(limit=None):
-                        messages.append(message)
-                    messages.reverse()
+                        print(f'Retrieving Quotes for {guild} in {channel.name}')
+                        if channel is not None:
+                            async for message in channel.history(limit=None):
+                                messages.append(message)
+                            messages.reverse()
 
-                    data.setMessages(messages)
+                            data.setMessages(messages)
+                        else:
+                            continue
+                    else:
+                        continue
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
