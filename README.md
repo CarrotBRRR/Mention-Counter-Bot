@@ -12,6 +12,3 @@ Developed by: Dominic Choi (CarrotBRRR)
     - send list of commands and descriptions
 
 - Add info about the bot in readme
-
-- q.say
-    - add parsing so that it can send channel mentions
