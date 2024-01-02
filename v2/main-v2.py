@@ -70,14 +70,13 @@ async def getQuotes(ctx):
 
 # Retrieves Messages from Specified Channel and 
 # stores it in a temporary global buffer
-async def getMessageHistory(ctx, *channels):
+async def getMessageHistory(ctx, channel):
     message_buffer = []
 
-    for channel in channels:
-        ch = bot.get_channel(int(channel))
+    ch = bot.get_channel(int(channel))
 
-        async for message in ch.history(limit=None):
-            message_buffer.append(message)
+    async for message in ch.history(limit=None):
+        message_buffer.append(message)
 
     return message_buffer
 
