@@ -2,6 +2,7 @@ import os, json
 import operator as op
 import random as rand
 import discord as dc
+import typing
 
 from discord.ext import commands as comms
 from discord.utils import get
@@ -355,23 +356,17 @@ async def on_message_edit(m_before, m_after):
     name="random",
     description="Get a random quote from the quote channel!"
 )
-async def random(ctx, chs: dc.TextChannel=None):
-    if chs is None:
+async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
+    if channel is None:
         print("Getting a random quote from Quote Channel...")
         
         # Get List of Quotes for Guild
         data = await getGuildInfo(ctx)
         messages = data.messages
 
-    elif len(chs) >= 1:
-        # ch_list = []
-
-        # for ch in chs:
-        #     ch.strip('<#').strip('>')
-        #     ch_list.append(ch)
-
-        print(f'Getting a random quote from {chs}')
-        messages = getMessageHistory(ctx, chs)
+    elif len(channel) >= 1:
+        print(f'Getting a random quote from {channel}')
+        messages = getMessageHistory(ctx, channel)
 
     else:
         print('An unexpected error occured...')
