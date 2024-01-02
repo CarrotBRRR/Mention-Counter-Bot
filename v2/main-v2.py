@@ -441,7 +441,7 @@ async def say(ctx, channel, *args):
         #     await channel.send(f'{sayload}')
 
         sayload = ' '.join(args)
-        ch = dc.utils.get(ctx.guild.channels, name=channel)
+        ch = dc.utils.get(ctx.guild.channels, id=channel)
         await ch.send(f'{sayload}')
 
 # Funny Joke Command
