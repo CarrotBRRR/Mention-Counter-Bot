@@ -369,7 +369,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
 
     elif channel is not None:
         print(f'Getting a random quote from {channel}')
-        messages = getMessageHistory(ctx, channel)
+        messages = await getMessageHistory(ctx, channel)
 
     else:
         print('An unexpected error occured...')
