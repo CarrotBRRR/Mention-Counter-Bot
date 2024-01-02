@@ -443,7 +443,7 @@ async def say(ctx, channel, *args):
         sayload = ' '.join(args)
         channel = channel.strip('<#').strip('>')
         print(f'{channel}')
-        ch = dc.utils.get(ctx.guild.channels, id=channel)
+        ch = bot.get_channel(int(channel))
         await ch.send(f'{sayload}')
 
 # Funny Joke Command
