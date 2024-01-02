@@ -547,9 +547,9 @@ async def sync(ctx: comms.Context):
     await bot.tree.sync()
     print("Synced")
 
-@bot.command(description ="initialize database for all guilds on startup")
+@bot.command(description="initialize database for all guilds on startup")
 @comms.is_owner()
-async def start(ctx: comms.Context):
+async def go(ctx: comms.Context):
     for guild in bot.guilds:
         for data in guilds:
             if data.id == guild.id:
@@ -567,8 +567,6 @@ async def start(ctx: comms.Context):
                     messages.reverse()
 
                     data.setMessages(messages)
-
-    
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
