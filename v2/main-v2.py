@@ -364,14 +364,14 @@ async def random(ctx, chs):
         messages = data.messages
 
     elif len(chs) >= 1:
-        ch_list = []
+        # ch_list = []
 
-        for ch in chs:
-            ch.strip('<#').strip('>')
-            ch_list.append(ch)
+        # for ch in chs:
+        #     ch.strip('<#').strip('>')
+        #     ch_list.append(ch)
 
-        print(f'Getting a random quote from {ch_list}')
-        messages = getMessageHistory(ctx, ch_list)
+        print(f'Getting a random quote from {chs}')
+        messages = getMessageHistory(ctx, chs)
 
     else:
         print('An unexpected error occured...')
