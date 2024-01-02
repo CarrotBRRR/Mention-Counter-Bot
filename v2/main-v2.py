@@ -543,12 +543,32 @@ async def stop(ctx: comms.Context):
 @bot.command(description="sync all global commands")
 @comms.is_owner()
 async def sync(ctx: comms.Context):
-    try:
-      print("Sycning tree...")
-      await bot.tree.sync()
-      print("Synced")
-    except dc.Forbidden:
-      await ctx.send("Unexpected forbidden from application scope.")
+    print("Sycning tree...")
+    await bot.tree.sync()
+    print("Synced")
+
+@bot.command(description ="initialize database for all guilds on startup")
+@comms.is_owner()
+async def start(ctx: comms.Context):
+    for guild in bot.guilds:
+        for data in guilds:
+            if data.id == guild.id:
+                    filepath = f'./data/{guild.id}/ServerInfo.json'
+                    with open(filepath, 'r') as f:
+                        config = json.load(f)
+
+                    channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
+                    messages = []
+
+                    print(f'Retrieving Quotes for {ctx.guild} in {channel.name}')
+                    
+                    async for message in channel.history(limit=None):
+                        messages.append(message)
+                    messages.reverse()
+
+                    data.setMessages(messages)
+
+    
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
