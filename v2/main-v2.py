@@ -341,7 +341,7 @@ async def on_message(message):
 
     if message.content == "git add -A":
         ctx = await bot.get_context(message)
-        await ctx.send("If you didn't mean to send this here, take a break from coding lmfao\n~Dom")
+        await ctx.send("If you didn't mean to send that here, take a break from coding lmfao\n~Dom")
 
     await bot.process_commands(message)
     return
@@ -368,10 +368,6 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     elif channel is not None:
         print(f'Getting a random quote from {channel}')
         messages = await getMessageHistory(ctx, channel)
-
-    else:
-        print('An unexpected error occured...')
-        return
 
     # Choose a quote
     message = rand.choice(messages)
@@ -416,7 +412,7 @@ async def quotes(ctx):
     user = ctx.message.mentions
 
     if len(user) != 1:
-        await ctx.send('Invalid Number of Users...\n**Usage:** q.quotes @user')
+        await ctx.send('Invalid Number of Users.\n**Usage:** q.quotes @user')
         return
     
     else:
@@ -434,7 +430,7 @@ async def authour(ctx):
     user = ctx.message.mentions
 
     if len(user) != 1:
-        await ctx.send('Invalid Number of Users...\n**Usage:** q.authour @user')
+        await ctx.send('Invalid Number of Users.\n**Usage:** q.authour @user')
         return
     
     else:
@@ -487,7 +483,7 @@ async def setQChannel(ctx):
 
     else: 
         ctx.send("invalid number of channels")
-        print("invalid number of channels")
+        print("[ERROR] invalid number of channels")
 
 # Command to initialize leaderboard
 # Usage: q.initLB
@@ -537,7 +533,6 @@ async def start(ctx):
 async def stop(ctx: comms.Context):
     print("Shutting down...")
     await bot.close()
-    print("Goodbye!")
 
 
 @bot.command(description="sync all global commands")
@@ -568,7 +563,10 @@ async def go(ctx: comms.Context):
                             messages.reverse()
 
                             data.setMessages(messages)
+                            print("Done!")
+
                         else:
+                            print("[ERROR] Could not find quotes channel")
                             continue
                     else:
                         continue
