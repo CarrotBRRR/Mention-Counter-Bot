@@ -76,10 +76,10 @@ async def getMessageHistory(ctx, *channels):
     for channel in channels:
         ch = bot.get_channel(int(channel))
 
-        async for message in channel.history(limit=None):
+        async for message in ch.history(limit=None):
             message_buffer.append(message)
 
-    return message_buffer      
+    return message_buffer
 
 # Retrieves Messages that Mention the specified user
 async def getMentions(ctx, member):
@@ -341,6 +341,10 @@ async def on_message(message):
         print(f"oye")
         ctx = await bot.get_context(message)
         await ctx.send("oye")
+
+    if message.content == "git add -A":
+        ctx = await bot.get_context(message)
+        await ctx.send("If you didn't mean to send this here, take a break from coding lmfao\n~Dom")
 
     await bot.process_commands(message)
     return
