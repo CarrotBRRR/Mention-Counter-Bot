@@ -355,7 +355,7 @@ async def on_message_edit(m_before, m_after):
     name="random",
     description="Get a random quote from the quote channel!"
 )
-async def random(ctx, chs):
+async def random(ctx, chs: dc.channel=None):
     if len(chs) == 0:
         print("Getting a random quote from Quote Channel...")
         
