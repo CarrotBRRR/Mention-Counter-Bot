@@ -73,9 +73,7 @@ async def getQuotes(ctx):
 async def getMessageHistory(ctx, channel):
     message_buffer = []
 
-    ch = bot.get_channel(int(channel))
-
-    async for message in ch.history(limit=None):
+    async for message in channel.history(limit=None):
         message_buffer.append(message)
 
     return message_buffer
