@@ -430,8 +430,6 @@ async def author(ctx):
 # Usage: q.say #channel #channel2 "message"
 @bot.command()
 async def say(ctx, channel, *args):
-    print(f'Channel: {channel}')
-
     if len(ctx.message.raw_channel_mentions) >= 1:
         sayload = f'{ctx.message.content}'.replace('q.say ', '')
 
@@ -443,7 +441,8 @@ async def say(ctx, channel, *args):
         #     await channel.send(f'{sayload}')
 
         sayload = ' '.join(args)
-        print(f'*args: {sayload}')
+        channel = channel.strip('<#').strip('>')
+        print(f'{channel}')
         ch = dc.utils.get(ctx.guild.channels, id=channel)
         await ch.send(f'{sayload}')
 
