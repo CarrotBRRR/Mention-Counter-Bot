@@ -9,3 +9,6 @@ Developed by: Dominic Choi (CarrotBRRR)
     - send list of commands and descriptions
 
 - Add info about the bot in readme
+
+- fix slash versions of q.authour @user and q.quotes @user
+    - currently does not accept any arguments
