@@ -378,10 +378,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
         quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
 
     print('Got a Random Quote!')
-
-    # Get Link to original quote
-    print(f'discordapp.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-
+    
     # Prepare the Embed
     print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
