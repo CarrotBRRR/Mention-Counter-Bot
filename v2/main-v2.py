@@ -355,7 +355,7 @@ async def on_message_edit(m_before, m_after):
     name="random",
     description="Get a random quote from the quote channel!"
 )
-async def random(ctx, *chs):
+async def random(ctx, chs):
     if len(chs) == 0:
         print("Getting a random quote from Quote Channel...")
         
@@ -458,21 +458,12 @@ async def author(ctx):
 # Usage: q.say #channel #channel2 "message"
 @bot.command()
 async def say(ctx, channel, *args):
-    if len(ctx.message.raw_channel_mentions) >= 1:
-        sayload = f'{ctx.message.content}'.replace('q.say ', '')
+    sayload = ' '.join(args)
 
-        # for channel in ctx.message.raw_channel_mentions:
-        #     sayload = sayload.replace(f'<#{channel}>', '')
-        
-        # for raw_channel in ctx.message.raw_channel_mentions:
-        #     channel = dc.utils.get(ctx.guild.channels, id=raw_channel)
-        #     await channel.send(f'{sayload}')
+    channel = channel.strip('<#').strip('>')
+    ch = bot.get_channel(int(channel))
 
-        sayload = ' '.join(args)
-        channel = channel.strip('<#').strip('>')
-
-        ch = bot.get_channel(int(channel))
-        await ch.send(f'{sayload}')
+    await ch.send(f'{sayload}')
 
 # Funny Joke Command
 @bot.command()
