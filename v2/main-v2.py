@@ -355,8 +355,8 @@ async def on_message_edit(m_before, m_after):
     name="random",
     description="Get a random quote from the quote channel!"
 )
-async def random(ctx, chs: dc.channel=None):
-    if len(chs) == 0:
+async def random(ctx, chs: dc.TextChannel=None):
+    if chs is None:
         print("Getting a random quote from Quote Channel...")
         
         # Get List of Quotes for Guild
