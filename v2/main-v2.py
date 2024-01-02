@@ -364,7 +364,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
         data = await getGuildInfo(ctx)
         messages = data.messages
 
-    elif len(channel) >= 1:
+    elif channel is not None:
         print(f'Getting a random quote from {channel}')
         messages = getMessageHistory(ctx, channel)
 
