@@ -67,6 +67,19 @@ async def getQuotes(ctx):
 
     print('Quotes Retrieved!')
 
+# Retrieves Messages from Specified Channel and 
+# stores it in a temporary global buffer
+async def getMessageHistory(ctx, *channels):
+    message_buffer = []
+
+    for channel in channels:
+        ch = bot.get_channel(int(channel))
+
+        async for message in channel.history(limit=None):
+            message_buffer.append(message)
+
+    return message_buffer      
+
 # Retrieves Messages that Mention the specified user
 async def getMentions(ctx, member):
     quote = ""
@@ -342,12 +355,27 @@ async def on_message_edit(m_before, m_after):
     name="random",
     description="Get a random quote from the quote channel!"
 )
-async def random(ctx):
-    print("Getting a random quote...")
-    
-    # Get List of Quotes for Guild
-    data = await getGuildInfo(ctx)
-    messages = data.messages
+async def random(ctx, *chs):
+    if len(chs) == 0:
+        print("Getting a random quote from Quote Channel...")
+        
+        # Get List of Quotes for Guild
+        data = await getGuildInfo(ctx)
+        messages = data.messages
+
+    elif len(chs) >= 1:
+        ch_list = []
+
+        for ch in chs:
+            ch.strip('<#').strip('>')
+            ch_list.append(ch)
+
+        print(f'Getting a random quote from {ch_list}')
+        messages = getMessageHistory(ctx, ch_list)
+
+    else:
+        print('An unexpected error occured...')
+        return
 
     # Choose a quote
     message = rand.choice(messages)
@@ -360,12 +388,12 @@ async def random(ctx):
     print('Got a Random Quote!')
 
     # Get Link to original quote
-    print(f'discordapp.com/channels/{data.id}/{message.channel.id}/{message.id}')
+    print(f'discordapp.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
 
     # Prepare the Embed
     print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
-                  url=f'https://discord.com/channels/{data.id}/{message.channel.id}/{message.id}')
+                url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
     em.add_field(name=quote, value = "")
 
     att_ems = []
@@ -442,7 +470,7 @@ async def say(ctx, channel, *args):
 
         sayload = ' '.join(args)
         channel = channel.strip('<#').strip('>')
-        print(f'{channel}')
+
         ch = bot.get_channel(int(channel))
         await ch.send(f'{sayload}')
 
