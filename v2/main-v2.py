@@ -477,7 +477,7 @@ async def setQChannel(ctx, qchannel: dc.TextChannel):
         channel = bot.get_channel(config["Q Channel"])
 
         print(f'Q Channel for {ctx.guild.name} is now {channel}')
-        await ctx.send(f'{channel.name} has been set to be the quotes channel!', ephemeral=True)
+        await ctx.send(f'{channel} has been set to be the quotes channel!', ephemeral=True)
 
     else: 
         await ctx.send("invalid number of channels")
