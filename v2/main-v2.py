@@ -472,7 +472,7 @@ async def setQChannel(ctx, qchannel: dc.TextChannel):
         print("Setting up default channel...")
 
         config = await getConfig(ctx)
-        await editConfig(ctx, config, "Q Channel", qchannel)
+        await editConfig(ctx, config, "Q Channel", qchannel.id)
 
         channel = bot.get_channel(config["Q Channel"])
 
