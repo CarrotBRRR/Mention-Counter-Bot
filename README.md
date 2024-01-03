@@ -2,9 +2,9 @@
 Developed by: Dominic Choi (CarrotBRRR)
 
 If you're wondering why the commits are directly onto the main branch, 
-this is because I'm the only developer working on the bot, 
+this is because I'm the only developer working on the bot.
 so I don't need to make new branches, since I will never
-get merge conflicts
+get merge conflicts. I do make new branches when I do something that may break the bot, though
 
 ## Current Features
 - Fill this out eventually
