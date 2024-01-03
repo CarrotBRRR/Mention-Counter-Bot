@@ -100,7 +100,7 @@ async def getMentions(ctx, member):
     with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
 
-async def getAuthoured(ctx, member):
+async def getAuthored(ctx, member):
     quote = ""
     quotes = ""
     
@@ -404,44 +404,39 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     name="quotes",
     description="Get all quotes from @user. Usage: /quotes @user"
 )
-async def quotes(ctx):
-    user = []
-    user = ctx.message.mentions
+async def quotes(ctx, user: dc.Member):
 
-    if len(user) != 1:
-        await ctx.send('Invalid Number of Users.\n**Usage:** q.quotes @user')
+    if user is None:
+        await ctx.send('Invalid Number of Users.\n**Usage:** q.quotes @user', ephemeral=True)
         return
     
     else:
-        await getMentions(ctx, user[0])
+        await getMentions(ctx, user)
         dump_path = f'./data/{ctx.guild.id}/messages.txt'
-        await ctx.message.author.send(f"Here are the quotes of {user[0]}: ", file=dc.File(dump_path))
+        await ctx.message.author.send(f"Here are the quotes of {user.name}: ", file=dc.File(dump_path))
 
 # Retrieve Quotes Authored by Specified User
 @bot.hybrid_command(
-    name="authour",
+    name="author",
     description="Get all quotes authoured by @user. Usage: /authour @user"
 )
-async def authour(ctx):
-    user = []
-    user = ctx.message.mentions
-
+async def author(ctx, user: dc.Member):
     if len(user) != 1:
         await ctx.send('Invalid Number of Users.\n**Usage:** q.authour @user')
         return
     
     else:
-        await getAuthoured(ctx, user[0])
+        await getAuthored(ctx, user)
         dump_path = f'./data/{ctx.guild.id}/messages.txt'
-        await ctx.message.author.send(f"Here are the quotes authored by {user[0]}: ", file=dc.File(dump_path))
+        await ctx.message.author.send(f"Here are the quotes authored by {user.name}: ", file=dc.File(dump_path))
 
-# For people from the USA
+# For people who can't spell
 @bot.hybrid_command(
-    name="author",
-    description="Same as /authour, but for people from the USA"
+    name="authour",
+    description="Same as /authour, but for people who can't spell"
 )
-async def author(ctx):
-    await authour(ctx)
+async def authour(ctx, user: dc.Member):
+    await author(ctx, user)
 
 # Make the bot say something
 # Usage: q.say #channel #channel2 "message"
