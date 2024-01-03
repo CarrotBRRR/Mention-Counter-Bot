@@ -418,11 +418,11 @@ async def quotes(ctx, user: dc.Member):
 # Retrieve Quotes Authored by Specified User
 @bot.hybrid_command(
     name="author",
-    description="Get all quotes authoured by @user. Usage: /authour @user"
+    description="Get all quotes authoured by @user. Usage: /author @user"
 )
 async def author(ctx, user: dc.Member):
-    if len(user) != 1:
-        await ctx.send('Invalid Number of Users.\n**Usage:** q.authour @user')
+    if user is None:
+        await ctx.send('Invalid Number of Users.\n**Usage:** q.author @user', ephemeral=True)
         return
     
     else:
@@ -433,7 +433,7 @@ async def author(ctx, user: dc.Member):
 # For people who can't spell
 @bot.hybrid_command(
     name="authour",
-    description="Same as /authour, but for people who can't spell"
+    description="Same as /author, but for people who can't spell"
 )
 async def authour(ctx, user: dc.Member):
     await author(ctx, user)
