@@ -97,7 +97,7 @@ async def getMentions(ctx, member):
 
     print('All mentions Found!')
     
-    with open(f'./data/{ctx.guild.id}/dump.txt', 'w+', encoding='utf-8') as d:
+    with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
 
 async def getAuthoured(ctx, member):
@@ -118,7 +118,7 @@ async def getAuthoured(ctx, member):
 
     print(f'All quotes by author {member.name} Found!')
 
-    with open(f'./data/{ctx.guild.id}/dump.txt', 'w+', encoding='utf-8') as f:
+    with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as f:
         f.write(quotes)
 
 # Counts amount of times mentioned in
@@ -414,7 +414,7 @@ async def quotes(ctx):
     
     else:
         await getMentions(ctx, user[0])
-        dump_path = f'./data/{ctx.guild.id}/dump.txt'
+        dump_path = f'./data/{ctx.guild.id}/messages.txt'
         await ctx.message.author.send(f"Here are the quotes of {user[0]}: ", file=dc.File(dump_path))
 
 # Retrieve Quotes Authored by Specified User
@@ -432,7 +432,7 @@ async def authour(ctx):
     
     else:
         await getAuthoured(ctx, user[0])
-        dump_path = f'./data/{ctx.guild.id}/dump.txt'
+        dump_path = f'./data/{ctx.guild.id}/messages.txt'
         await ctx.message.author.send(f"Here are the quotes authored by {user[0]}: ", file=dc.File(dump_path))
 
 # For people from the USA
