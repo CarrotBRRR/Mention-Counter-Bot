@@ -413,6 +413,7 @@ async def quotes(ctx, user: dc.Member):
     else:
         await getMentions(ctx, user)
         dump_path = f'./data/{ctx.guild.id}/messages.txt'
+        await ctx.send(f'Quotes by Author {user.name} retrieved!\nPlease check your DMs.')
         await ctx.message.author.send(f"Here are the quotes of {user.name}: ", file=dc.File(dump_path))
 
 # Retrieve Quotes Authored by Specified User
@@ -428,6 +429,7 @@ async def author(ctx, user: dc.Member):
     else:
         await getAuthored(ctx, user)
         dump_path = f'./data/{ctx.guild.id}/messages.txt'
+        await ctx.send(f'Quotes by author {user.name} retrieved!\nPlease check your DMs.')
         await ctx.message.author.send(f"Here are the quotes authored by {user.name}: ", file=dc.File(dump_path))
 
 # For people who can't spell
