@@ -2,9 +2,6 @@
 Developed by: Dominic Choi (CarrotBRRR)
 
 ## TODO: 
-- q.random #channel
-    - get a random quote from a specified channel
-
 - Timing Feature
     - print time taken in console to retrieve quotes
 
@@ -13,5 +10,5 @@ Developed by: Dominic Choi (CarrotBRRR)
 
 - Add info about the bot in readme
 
-- q.say
-    - add parsing so that it can send channel mentions
+- fix slash versions of q.authour @user and q.quotes @user
+    - currently does not accept any arguments
