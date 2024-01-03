@@ -467,7 +467,7 @@ async def bingchilling(ctx):
     description="(Admin Only) Set the channel to a specified #channel"
 )
 @comms.has_permissions(administrator=True)
-async def setQChannel(ctx):
+async def setQChannel(ctx, qchannel: dc.TextChannel):
     if len(ctx.message.channel_mentions) == 1:
         print("Setting up default channel...")
 
