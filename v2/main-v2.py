@@ -468,18 +468,18 @@ async def bingchilling(ctx):
 )
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx, qchannel: dc.TextChannel):
-    if len(ctx.message.channel_mentions) == 1:
+    if qchannel is not None:
         print("Setting up default channel...")
 
         config = await getConfig(ctx)
-        await editConfig(ctx, config, "Q Channel", ctx.message.raw_channel_mentions[0])
+        await editConfig(ctx, config, "Q Channel", qchannel)
 
         channel = bot.get_channel(config["Q Channel"])
 
         print(f'Q Channel for {ctx.guild.name} is now {channel}')
 
     else: 
-        ctx.send("invalid number of channels")
+        await ctx.send("invalid number of channels")
         print("[ERROR] invalid number of channels")
 
 # Command to initialize leaderboard
