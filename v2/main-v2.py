@@ -398,7 +398,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     em.set_footer(text='Truly Words of Wisdom...')
     print('Sending Random Quote Embed!')
 
-    await m.edit(embeds=att_ems)
+    await m.edit(content=None, embeds=att_ems)
 
 # Retrieve Quotes of Specified User
 @bot.hybrid_command(
@@ -517,7 +517,7 @@ async def refresh(ctx):
     await updateLB(ctx)
 
     print("Leaderboard Manually Refreshed!")
-    await m.edit(content={f'Leaderboard Refreshed!'})
+    await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
 
 
 # -------------------------------- Owner Commands ---------------------------------
