@@ -517,7 +517,7 @@ async def refresh(ctx):
     await updateLB(ctx)
 
     print("Leaderboard Manually Refreshed!")
-    await m.edit(f'Leaderboard Refreshed!')
+    await m.edit(content={f'Leaderboard Refreshed!'})
 
 
 # -------------------------------- Owner Commands ---------------------------------
