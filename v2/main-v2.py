@@ -360,14 +360,14 @@ async def on_message_edit(m_before, m_after):
 async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     if channel is None:
         print("Getting a random quote from Quote Channel...")
-        m = await ctx.send(f'Getting a random quote from Quote Channel...', ephemeral=True)
+        m = await ctx.send(f'Getting a random quote from Quote Channel...')
         # Get List of Quotes for Guild
         data = await getGuildInfo(ctx)
         messages = data.messages
 
     elif channel is not None:
         print(f'Getting a random quote from {channel}')
-        m = await ctx.send(f'Getting a random quote from {channel}...', ephemeral=True)
+        m = await ctx.send(f'Getting a random quote from {channel}...')
         messages = await getMessageHistory(ctx, channel)
 
     # Choose a quote
@@ -398,7 +398,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     em.set_footer(text='Truly Words of Wisdom...')
     print('Sending Random Quote Embed!')
 
-    await m.edit(embeds=att_ems, ephemeral=False)
+    await m.edit(embeds=att_ems)
 
 # Retrieve Quotes of Specified User
 @bot.hybrid_command(
@@ -517,7 +517,7 @@ async def refresh(ctx):
     await updateLB(ctx)
 
     print("Leaderboard Manually Refreshed!")
-    await m.edit(f'Leaderboard Refreshed!', ephemeral=True)
+    await m.edit(f'Leaderboard Refreshed!')
 
 
 # -------------------------------- Owner Commands ---------------------------------
