@@ -467,9 +467,7 @@ async def sayin(ctx, channel: dc.TextChannel, message: str):
     description="Make the bot say something in current channel!"
 )
 async def say(ctx, message: str):
-    r = await ctx.send(f'Sending Message...', ephemeral=True)
-    await ctx.send(f'{message}')
-    r.edit(f'Message Sent!', delete_after=2)
+    await sayin(ctx, ctx.channel, message)
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
