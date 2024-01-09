@@ -458,16 +458,18 @@ async def authour(ctx, user: dc.Member):
     description="Make the bot say something in specified channel!"
 )
 async def sayin(ctx, channel: dc.TextChannel, message: str):
+    r = await ctx.send(f'Sending Message to {channel}...', ephemeral=True)
     await channel.send(f'{message}')
-    await ctx.send(f'Message sent to {channel}', ephemeral=True, delete_after=2)
+    await r.edit(f'Message sent to {channel}', ephemeral=True, delete_after=2)
 
 @bot.hybrid_command(
     name="say",
     description="Make the bot say something in current channel!"
 )
 async def say(ctx, message: str):
+    r = await ctx.send(f'Sending Message...', ephemeral=True)
     await ctx.send(f'{message}')
-    await ctx.send(f'Message sent', ephemeral=True, delete_after=2)
+    r.edit(f'Message Sent!', delete_after=2)
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
