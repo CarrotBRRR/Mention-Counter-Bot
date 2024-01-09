@@ -460,7 +460,7 @@ async def authour(ctx, user: dc.Member):
 async def sayin(ctx, channel: dc.TextChannel, message: str):
     r = await ctx.send(f'Sending Message to {channel}...', ephemeral=True)
     await channel.send(f'{message}')
-    await r.edit(f'Message sent to {channel}', ephemeral=True, delete_after=2)
+    await r.edit(f'Message sent to {channel}', delete_after=2)
 
 @bot.hybrid_command(
     name="say",
