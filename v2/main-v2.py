@@ -452,25 +452,27 @@ async def authour(ctx, user: dc.Member):
     await author(ctx, user)
 
 # Make the bot say something
-# Usage: q.say #channel "message"
+# Usage: q.sayin #channel "message"
 @bot.hybrid_command(
-    name="say",
+    name="sayin",
     description="Make the bot say something in specified channel!"
 )
-async def say(ctx, channel: dc.TextChannel, message: str):
-    # sayload = ' '.join(args)
-
-    # channel = channel.strip('<#').strip('>')
-    # ch = bot.get_channel(int(channel))
-
+async def sayin(ctx, channel: dc.TextChannel, message: str):
     await channel.send(f'{message}')
-    await ctx.send(f'Message sent to {channel}', ephemeral=True)
+    await ctx.send(f'Message sent to {channel}', ephemeral=True, delete_after=2)
+
+@bot.hybrid_command(
+    name="say",
+    description="Make the bot say something in current channel!"
+)
+async def say(ctx, message: str):
+    await ctx.send(f'{message}')
+    await ctx.send(f'Message sent', ephemeral=True, delete_after=2)
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
     for channel in channels:
         await say(ctx, channel, message)
-    
 
 # Funny Joke Command
 @bot.command()
