@@ -16,6 +16,7 @@ load_dotenv()
 intents = dc.Intents.default()
 intents.message_content = True
 intents.members = True
+
 bot = comms.Bot(command_prefix="q.", intents=intents)
 
 # ----------------------------------- Functions -----------------------------------
@@ -57,7 +58,7 @@ async def getGuildInfo(ctx):
 async def getQuotes(ctx):
     data = await getGuildInfo(ctx)
     config = await getConfig(ctx)
-    channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
+    channel = get(ctx.guild.channels, id=config["Q Channel"])
     messages = []
     print(f'Retrieving Quotes for {ctx.guild} in {channel.name}')
     async for message in channel.history(limit=None):
@@ -100,6 +101,8 @@ async def getMentions(ctx, member):
     with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
 
+# Retrieves Messages that Mention a user and 
+# are Authored by the specified user
 async def getAuthored(ctx, member):
     quote = ""
     quotes = ""
@@ -188,6 +191,7 @@ async def getScores(ctx):
     
     return Scores
 
+# Create the Leaderboard based on the stored leaderboard
 async def createLBEm(ctx):
     scores = await getScores(ctx)
     index = 1
@@ -202,6 +206,7 @@ async def createLBEm(ctx):
 
     return em
 
+# Edits the Leaderboard with updated data
 async def updateLB(ctx):
     config = await getConfig(ctx)
     lb_channelid = int(config["LB"]["Channel ID"])
@@ -442,15 +447,25 @@ async def authour(ctx, user: dc.Member):
     await author(ctx, user)
 
 # Make the bot say something
-# Usage: q.say #channel #channel2 "message"
+# Usage: q.say #channel "message"
+@bot.hybrid_command(
+    name="say",
+    description="Make the bot say something in specified channel!"
+)
+async def say(ctx, channel: dc.TextChannel, message: str):
+    # sayload = ' '.join(args)
+
+    # channel = channel.strip('<#').strip('>')
+    # ch = bot.get_channel(int(channel))
+
+    await channel.send(f'{message}')
+    await ctx.send(f'Message sent to {channel}', ephemeral=True)
+
 @bot.command()
-async def say(ctx, channel, *args):
-    sayload = ' '.join(args)
-
-    channel = channel.strip('<#').strip('>')
-    ch = bot.get_channel(int(channel))
-
-    await ch.send(f'{sayload}')
+async def multi_say(ctx, *channels, message: str):
+    for channel in channels:
+        await say(ctx, channel, message)
+    
 
 # Funny Joke Command
 @bot.command()
@@ -551,7 +566,7 @@ async def go(ctx: comms.Context):
                         config = json.load(f)
 
                     if config["Q Channel"] != 0:
-                        channel = dc.utils.get(guild.channels, id=config["Q Channel"])
+                        channel = get(guild.channels, id=config["Q Channel"])
                         messages = []
 
                         print(f'Retrieving Quotes for {guild} in {channel.name}')
