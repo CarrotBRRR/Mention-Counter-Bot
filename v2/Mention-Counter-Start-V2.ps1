@@ -22,4 +22,3 @@ Clear-Host
 
 # Call the PowerShell script itself
 & $MyInvocation.MyCommand.Definition
-

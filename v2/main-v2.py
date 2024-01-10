@@ -549,6 +549,23 @@ async def refresh(ctx):
     print("Leaderboard Manually Refreshed!")
     await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
 
+# -------------------------------- Trust Commands ---------------------------------
+@bot.command()
+@comms.has_role(os.getenv("TRUSTROLEID1"), os.getenv("TRUSTROLEID2"))
+async def logs(ctx):
+    most_recent_time = 0
+    most_recent_file = None
+
+    for log in os.scandir(f'./logs/'):
+        mod_time = log.stat().st_mtime_ns
+
+        if mod_time > most_recent_time:
+            # update the most recent file and its modification time
+            most_recent_file = log.name
+            most_recent_time = mod_time
+
+    if most_recent_file is not None:        
+        ctx.author.send(content="**Here are the logs:**", file=dc.File(f'./logs/{most_recent_file}'))
 
 # -------------------------------- Owner Commands ---------------------------------
 @bot.command(description="Initialize stack data")
