@@ -234,8 +234,11 @@ async def updateLB(ctx):
 # ----------------------------------- Bot Events ----------------------------------
 @bot.event
 async def on_ready():
-    print(f'Initializing Files...')
+    if not os.path.exists("./logs"):
+        os.mkdir('./logs')
 
+    print(f'Initializing Files...')
+    
     # Initialize data folder
     if not os.path.exists("./data"):
         os.mkdir('./data')
