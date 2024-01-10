@@ -320,7 +320,8 @@ async def on_interaction(interaction):
 @bot.event
 async def on_message(message):
     if not message.author.bot:
-        print(f'[{message.guild}] ({message.channel}) {message.author}:\n\t{message.content}')
+        text = str(message.content).replace("\n","\n\t")
+        print(f'[{message.guild}] ({message.channel}) {message.author}:\n\t{text}')
 
     ctx = await bot.get_context(message)
     if ctx.guild is not None:
@@ -458,12 +459,14 @@ async def authour(ctx, user: dc.Member):
     description="Make the bot say something in specified channel!"
 )
 async def sayin(ctx, channel: dc.TextChannel, message: str):
-    sayload = message.replace('\\n','\n')
-
     r = await ctx.send(f'Sending Message to {channel.mention}...', ephemeral=True)
+
+    sayload = message.replace('\\n','\n')
     await channel.send(f'{sayload}')
 
-    print(f'[{ctx.guild}] ({channel}) {ctx.message.author}:\n\t{sayload}')
+    sayload = sayload.replace('\n', '\n\t')
+    print(f'[{ctx.guild}] ({channel}) {ctx.message.author} (Anonymous):\n\t{sayload}')
+
     await r.edit(content=f'Message sent to {channel.mention}!', delete_after=2)
 
 @bot.hybrid_command(
