@@ -2,7 +2,7 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Get the current date and time for the log file
-$LOGFILE_TIME = (Get-Date).ToString("HH-mm")
+$LOGFILE_TIME = (Get-Date).ToString("HHmm")
 $LOGFILE = "./logs/$(Get-Date -Format 'yyyy-MM-dd')_$LOGFILE_TIME.log"
 
 # Display message for checking updates
