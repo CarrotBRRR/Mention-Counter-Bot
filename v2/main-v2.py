@@ -551,7 +551,7 @@ async def refresh(ctx):
 
 # -------------------------------- Trust Commands ---------------------------------
 @bot.command()
-@comms.has_role(os.getenv("TRUSTROLEID1"), os.getenv("TRUSTROLEID2"))
+@comms.has_role(os.getenv("TRUSTROLEID"))
 async def logs(ctx):
     most_recent_time = 0
     most_recent_file = None
