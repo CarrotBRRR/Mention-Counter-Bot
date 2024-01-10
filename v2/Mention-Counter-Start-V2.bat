@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > NUL
 set LOGFILE_TIME=%TIME:~0,2%-%TIME:~3,2%
 set LOGFILE=./logs/%DATE%_%LOGFILE_TIME%.log
 echo ----------------- Checking for Updates ----------------

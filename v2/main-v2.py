@@ -1,4 +1,4 @@
-import os, json
+import os, json, sys
 import operator as op
 import random as rand
 import discord as dc
@@ -12,6 +12,7 @@ from GuildInfo import GuildInfo
 
 # ------------------------------------ Globals ------------------------------------
 load_dotenv()
+sys.stdout.reconfigure(encoding='utf-8')
 
 intents = dc.Intents.default()
 intents.message_content = True
