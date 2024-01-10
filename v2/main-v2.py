@@ -551,7 +551,7 @@ async def refresh(ctx):
 
 # -------------------------------- Trust Commands ---------------------------------
 @bot.command()
-@comms.has_role(os.getenv("TRUSTROLEID"))
+@comms.has_role(int(os.getenv("TRUSTROLEID")))
 async def logs(ctx):
     most_recent_time = 0
     most_recent_file = None
@@ -565,7 +565,7 @@ async def logs(ctx):
             most_recent_time = mod_time
 
     if most_recent_file is not None:        
-        ctx.author.send(content="**Here are the logs:**", file=dc.File(f'./logs/{most_recent_file}'))
+        await ctx.author.send(content="**Here are the logs:**", file=dc.File(f'./logs/{most_recent_file}'))
 
 # -------------------------------- Owner Commands ---------------------------------
 @bot.command(description="Initialize stack data")
