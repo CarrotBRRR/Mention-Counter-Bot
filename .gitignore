@@ -2,6 +2,7 @@
 *.env
 *.json
 *.txt
+*.log
 
 # Folders to Ignore
 data/
