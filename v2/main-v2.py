@@ -484,10 +484,17 @@ async def say(ctx, message: str):
     name="get",
     description="Make the bot say something in current channel!"
 )
-async def get(ctx, message_id: int):
+async def get(ctx, message_id: str):
     m = await ctx.send(f'Getting your requested message...')
+    
+    try:
+        msgid = int(message_id)
+        message = await ctx.fetch_message(msgid)
+        if message is None:
+            raise Exception("Invalid Message ID")
+    except:
+        ctx.send("Please Input a Valid Message ID", ephemeral=True, delete_after=2)
 
-    message = await ctx.fetch_message(message_id)
     quote = str(message.content)
 
     for mentioned in message.mentions:
@@ -652,6 +659,7 @@ async def go(ctx: comms.Context):
                         continue
                 else:
                     continue
+    print("Finished startup sequence!")
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
