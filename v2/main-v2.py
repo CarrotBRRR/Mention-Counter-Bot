@@ -325,7 +325,7 @@ async def on_interaction(interaction):
 async def on_message(message):
     if not message.author.bot:
         text = str(message.content).replace("\n","\n\t")
-        print(f'[{message.guild}] ({message.channel}) {message.author}:\n\t{text}')
+        print(f'+ [{message.guild}] ({message.channel}) {message.author}:\n\t{text}')
 
     ctx = await bot.get_context(message)
     if ctx.guild is not None:
@@ -364,7 +364,17 @@ async def on_message(message):
 @bot.event
 async def on_message_edit(m_before, m_after):
     if not m_before.author.bot:
-        print(f'[{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {m_before.content}\n   -> {m_after.content}')
+        before_text = str(m_before.content).replace("\n","\n\t")
+        after_text = str(m_after.content).replace("\n","\n\t")
+
+        print(f'~ [{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {before_text}\n   -> {after_text}')
+
+@bot.event
+async def on_message_delete(message):
+    if not message.author.bot:
+        text = str(message.content).replace("\n","\n\t")
+
+        print(f'- [{message.guild}] ({message.channel}) {message.author} Deleted:\n   {text}\n')
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
@@ -491,9 +501,7 @@ async def get(ctx, message_id: str):
     message = None
     for channel in ctx.guild.channels:
         try:
-            print(f'{channel.name}')
             message = await channel.fetch_message(msgid)
-            
         except:
             continue
 
