@@ -489,9 +489,15 @@ async def get(ctx, message_id: str):
 
     try:
         msgid = int(message_id)
-        message = await ctx.fetch_message(msgid)
+        message = None
+        for channel in ctx.guild.channels:
+            try:
+                message = await channel.fetch_message(msgid)
+            except dc.errors.NotFound:
+                continue
+
         if message is None:
-            raise Exception("Invalid Message ID")
+            raise Exception("Message with ID not found")
 
         quote = str(message.content)
 
@@ -513,7 +519,7 @@ async def get(ctx, message_id: str):
             att_ems.append(att)
 
     except:
-        await m.edit("Please Input a Valid Message ID", delete_after=2)
+        await m.edit(content="Please Input a Valid Message ID", delete_after=2)
 
     await m.edit(content=None, embeds=att_ems)
 
