@@ -397,19 +397,13 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
 
     # Choose a quote
     message = rand.choice(messages)
-    quote = str(message.content)
-
-    # Replace User IDs with username
-    for mentioned in message.mentions:
-        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
-
     print('Got a Random Quote!')
     
     # Prepare the Embed
     print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-    em.add_field(name="", value=quote)
+    em.add_field(name="", value=message.content)
 
     att_ems = []
     att_ems.append(em)
@@ -503,15 +497,11 @@ async def get(ctx, message_id: str):
         try:
             message = await channel.fetch_message(msgid)
         except:
+            message = None
             continue
 
     if message is None:
         await m.edit(content="Please Input a Valid Message ID", delete_after=2)
-
-    quote = str(message.content)
-
-    for mentioned in message.mentions:
-        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
 
     em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
