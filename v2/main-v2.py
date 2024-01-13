@@ -399,7 +399,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-    em.add_field(name=quote, value = "")
+    em.add_field(name="", value=quote)
 
     att_ems = []
     att_ems.append(em)
@@ -479,6 +479,41 @@ async def sayin(ctx, channel: dc.TextChannel, message: str):
 )
 async def say(ctx, message: str):
     await sayin(ctx, ctx.channel, message)
+
+@bot.hybrid_command(
+    name="get",
+    description="Make the bot say something in current channel!"
+)
+async def get(ctx, message_id: int):
+    m = await ctx.send(f'Getting your requested message...')
+
+    message = await ctx.fetch_message(message_id)
+    quote = str(message.content)
+
+    for mentioned in message.mentions:
+        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+
+    em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
+                url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+    
+    em.add_field(name="", value=message.content)
+
+    att_ems = []
+    att_ems.append(em)
+
+    # if len(message.attachments) != 0:
+    for attachment in message.attachments:
+        att = dc.Embed()
+        att.set_image(url = attachment.url)
+        att_ems.append(att)
+
+    em.set_footer(text='Truly Words of Wisdom...')
+    print('Sending Random Quote Embed!')
+
+    await m.edit(content=None, embeds=att_ems)
+
+
+
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
