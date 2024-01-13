@@ -48,10 +48,10 @@ async def getGuildInfo(ctx):
         if data.id == ctx.guild.id:
             return data
     
-    print('Could not find Guild Data, Creating...')
+    print(f'[INFO] Could not find Guild Data, Creating...')
     data = GuildInfo(ctx.guild.name, ctx.guild.id)
     guilds.append(data)
-    print('Created!')
+    print(f'[INFO] Created!')
     return data
 
 # Retrieves Messages from Quotes Channel and stores it in 
@@ -61,14 +61,14 @@ async def getQuotes(ctx):
     config = await getConfig(ctx)
     channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
     messages = []
-    print(f'Retrieving Quotes for {ctx.guild} in {channel.name}')
+    print(f'[INFO] Retrieving Quotes for {ctx.guild} in {channel.name}')
     async for message in channel.history(limit=None):
         messages.append(message)
     messages.reverse()
 
     data.setMessages(messages)
 
-    print('Quotes Retrieved!')
+    print(f'[INFO] Quotes Retrieved!')
 
 # Retrieves Messages from Specified Channel and 
 # stores it in a temporary global buffer
@@ -92,7 +92,7 @@ async def getMentions(ctx, member):
 
     data = await getGuildInfo(ctx)
 
-    print(f'Searching for mentions of {member.name} in cache of {ctx.guild}...')
+    print(f'[INFO] Searching for mentions of {member.name} in cache of {ctx.guild}...')
 
     for message in data.messages:
         if member in message.mentions:
@@ -102,7 +102,7 @@ async def getMentions(ctx, member):
             
             quotes += quote + "\n\n"
 
-    print('All mentions Found!')
+    print(f'[INFO] All mentions found!')
     
     with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as d:
         d.write(quotes)
@@ -115,7 +115,7 @@ async def getAuthored(ctx, member):
     
     data = await getGuildInfo(ctx)
 
-    print(f'Searching for Author {member.name} in cache of {ctx.guild}...')
+    print(f'[INFO] Searching for Author {member.name} in cache of {ctx.guild}...')
 
     for message in data.messages:
         if member == message.author and len(message.mentions) >= 1:
@@ -125,7 +125,7 @@ async def getAuthored(ctx, member):
             
             quotes += quote + "\n\n"
 
-    print(f'All quotes by author {member.name} Found!')
+    print(f'[INFO] All quotes by author {member.name} found!')
 
     with open(f'./data/{ctx.guild.id}/messages.txt', 'w+', encoding='utf-8') as f:
         f.write(quotes)
@@ -136,7 +136,7 @@ async def count(ctx):
     guild_info = await getGuildInfo(ctx)
     counts = []
 
-    print(f'Beginning Quote Count for {ctx.guild.name}...')
+    print(f'[INFO] Beginning Quote Count for {ctx.guild.name}...')
     for member in ctx.guild.members:
         if not member.bot:
             c = 0
@@ -158,22 +158,16 @@ async def count(ctx):
                 }
                 counts.append(obj)
 
-    print('Finished Counting!')
-
-    print('Saving Scores...')
     filepath = f'./data/{ctx.guild.id}/Leaderboard.json'
-
     counts.sort(key=op.itemgetter('Mentions'), reverse=True)
-
     with open(filepath, 'w+', encoding="utf-8") as f:
         json.dump(counts, f, indent=4)
 
-    print('Scores Saved!')
+    print(f'[INFO] Scores Saved!')
     return counts
 
 # Retrieves scores from the Leaderboard.json
 async def getScores(ctx):
-    print('Getting Scores...')
     # Load JSON containing Scores
     filepath = f'./data/{ctx.guild.id}/Leaderboard.json'
 
@@ -193,7 +187,7 @@ async def getScores(ctx):
 
         Scores.append(score)
 
-    print('Scores Retrieved!')
+    print(f'[INFO] Scores Retrieved!')
     
     return Scores
 
@@ -219,17 +213,17 @@ async def updateLB(ctx):
     lb_messageid = int(config["LB"]["Message ID"])
 
     if lb_channelid != 0 and lb_messageid != 0:
-        print('Updating Leaderboard...')
+        print(f'[INFO] Updating Leaderboard...')
 
         channel = bot.get_channel(lb_channelid)
         lbmessage = await channel.fetch_message(lb_messageid)
        
         em = await createLBEm(ctx)
         await lbmessage.edit(embed=em)
-        print('Leaderboard Updated!')
+        print(f'[INFO] Leaderboard Updated!')
 
     else:
-        print('Leaderboard not Initialized!')
+        print(f'[ERROR] Leaderboard not Initialized!')
 
 # ----------------------------------- Bot Events ----------------------------------
 @bot.event
@@ -237,7 +231,7 @@ async def on_ready():
     if not os.path.exists("./logs"):
         os.mkdir('./logs')
 
-    print(f'Initializing Files...')
+    print(f'[INFO] Initializing Files...')
     
     # Initialize data folder
     if not os.path.exists("./data"):
@@ -258,7 +252,7 @@ async def on_ready():
 
         # Set-up Directory and Config
         if not os.path.exists(filepath):
-            print(f'Setting up Directory for {guild.name}...')
+            print(f'[INFO] Setting up Directory for {guild.name}...')
             os.mkdir(filepath)
 
             # Set-up Default Config JSON
@@ -276,9 +270,9 @@ async def on_ready():
             with open(f'{filepath}/ServerInfo.json', 'w+') as f:
                 json.dump(info, f, indent=4)
                 
-            print(f'Directory for {guild.name} initialized!')
-    print('Files Initialized!')
-    print(f'Bot connected as {bot.user}')
+            print(f'[INFO] Directory for {guild.name} initialized!')
+    print(f'[INFO] Files Initialized!')
+    print(f'[INFO] Bot connected as {bot.user}')
 
 @bot.event
 async def on_guild_join(guild):
@@ -290,7 +284,7 @@ async def on_guild_join(guild):
 
     # Set-up Directory and Config
     if not os.path.exists(filepath):
-        print(f'Setting up Directory for {guild.name}...')
+        print(f'[INFO] Setting up Directory for {guild.name}...')
         os.mkdir(filepath)
 
         # Set-up Default Config JSON
@@ -308,7 +302,7 @@ async def on_guild_join(guild):
         with open(f'{filepath}/ServerInfo.json', 'w+') as f:
             json.dump(info, f, indent=4)
             
-        print(f'Directory for {guild.name} initialized!')
+        print(f'[INFO] Directory for {guild.name} initialized!')
 
 @bot.event
 async def on_interaction(interaction):
@@ -367,14 +361,14 @@ async def on_message_edit(m_before, m_after):
         before_text = str(m_before.content).replace("\n","\n\t")
         after_text = str(m_after.content).replace("\n","\n\t")
 
-        print(f'~ [{m_before.guild}] ({m_before.channel}) {m_before.author} Edited:\n   {before_text}\n   -> {after_text}')
+        print(f' * [{m_before.guild}] ({m_before.channel}) {m_before.author} Edited:\n   {before_text}\n   -> {after_text}')
 
 @bot.event
 async def on_message_delete(message):
     if not message.author.bot:
         text = str(message.content).replace("\n","\n\t")
 
-        print(f'- [{message.guild}] ({message.channel}) {message.author} Deleted:\n   {text}\n')
+        print(f' - [{message.guild}] ({message.channel}) {message.author} Deleted:\n   {text}\n')
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
@@ -384,23 +378,21 @@ async def on_message_delete(message):
 )
 async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     if channel is None:
-        print("Getting a random quote from Quote Channel...")
+        print(f'[INFO] Getting a random quote from Quote Channel...')
         m = await ctx.send(f'Getting a random quote from Quote Channel...')
         # Get List of Quotes for Guild
         data = await getGuildInfo(ctx)
         messages = data.messages
 
     elif channel is not None:
-        print(f'Getting a random quote from {channel}')
+        print(f'[INFO] Getting a random quote from {channel}')
         m = await ctx.send(f'Getting a random quote from {channel}...')
         messages = await getMessageHistory(ctx, channel)
 
     # Choose a quote
     message = rand.choice(messages)
-    print('Got a Random Quote!')
     
     # Prepare the Embed
-    print('Preparing Embed...')
     em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
     em.add_field(name="", value=message.content)
@@ -415,7 +407,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
         att_ems.append(att)
 
     em.set_footer(text='Truly Words of Wisdom...')
-    print('Sending Random Quote Embed!')
+    print(f'[INFO] Sending Random Quote Embed!')
 
     await m.edit(content=None, embeds=att_ems)
 
@@ -473,7 +465,7 @@ async def sayin(ctx, channel: dc.TextChannel, message: str):
     await channel.send(f'{sayload}')
 
     sayload = sayload.replace('\n', '\n\t')
-    print(f'+ [{ctx.guild}] ({channel}) {ctx.message.author} (Anonymous):\n\t{sayload}')
+    print(f' + [{ctx.guild}] ({channel}) {ctx.message.author} (Anonymous):\n\t{sayload}')
 
     await r.edit(content=f'Message sent to {channel.mention}!', delete_after=2)
 
@@ -519,8 +511,6 @@ async def get(ctx, message_id: str):
 
     await m.edit(content=None, embeds=att_ems)
 
-        
-
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
     for channel in channels:
@@ -541,19 +531,19 @@ async def bingchilling(ctx):
 @comms.has_permissions(administrator=True)
 async def setQChannel(ctx, qchannel: dc.TextChannel):
     if qchannel is not None:
-        print("Setting up default channel...")
+        print(f'[INFO] Setting up default channel...')
 
         config = await getConfig(ctx)
         await editConfig(ctx, config, "Q Channel", qchannel.id)
 
         channel = bot.get_channel(config["Q Channel"])
 
-        print(f'Q Channel for {ctx.guild.name} is now {channel}')
+        print(f'[INFO] Q Channel for {ctx.guild.name} is now {channel}')
         await ctx.send(f'{channel} has been set to be the quotes channel!', ephemeral=True)
 
     else: 
         await ctx.send("invalid number of channels")
-        print("[ERROR] invalid number of channels")
+        print(f'[ERROR] invalid number of channels')
 
 # Command to initialize leaderboard
 # Usage: q.initLB
@@ -583,14 +573,14 @@ async def initLB(ctx):
 )
 @comms.has_guild_permissions(administrator=True)
 async def refresh(ctx):
-    print(f"Refreshing Leaderboard for {ctx.guild.name} Manually...")
+    print(f'[INFO] Refreshing Leaderboard for {ctx.guild.name} Manually...')
     m = await ctx.send(f'Refreshing leaderboard...', ephemeral=True)
 
     await getQuotes(ctx)
     await count(ctx)
     await updateLB(ctx)
 
-    print("Leaderboard Manually Refreshed!")
+    print(f'[INFO] Leaderboard Manually Refreshed!')
     await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
 
 # -------------------------------- Trust Commands ---------------------------------
@@ -620,16 +610,16 @@ async def start(ctx):
 @bot.command(description="Turns off bot (bat restart)")
 @comms.is_owner()
 async def stop(ctx: comms.Context):
-    print("Shutting down...")
+    print(f'[INFO] Shutting down...')
     await bot.close()
 
 
 @bot.command(description="sync all global commands")
 @comms.is_owner()
 async def sync(ctx: comms.Context):
-    print("Sycning tree...")
+    print(f'[INFO] Sycning tree...')
     await bot.tree.sync()
-    print("Synced")
+    print(f'[INFO] Synced')
 
 @bot.command(description="initialize database for all guilds on startup")
 @comms.is_owner()
@@ -644,24 +634,24 @@ async def go(ctx: comms.Context):
                 if config["Q Channel"] != 0:
                     channel = dc.utils.get(guild.channels, id=config["Q Channel"])
                     messages = []
-                    print(f'Retrieving Quotes for {guild}')
+                    print(f'[INFO] Retrieving Quotes for {guild}')
                           
                     if channel is not None:
-                        print(f'Quotes Channel: {channel.name}')
+                        print(f'\tQuotes Channel: {channel.name}')
 
                         async for message in channel.history(limit=None):
                             messages.append(message)
                         messages.reverse()
 
                         data.setMessages(messages)
-                        print("Done!")
+                        print('\tDone!')
 
                     else:
-                        print("[ERROR] Could not find quotes channel")
+                        print(f'[ERROR] Could not find quotes channel')
                         continue
                 else:
                     continue
-    print("Finished startup sequence!")
+    print(f'[INFO] Finished startup sequence!')
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
