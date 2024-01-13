@@ -638,10 +638,11 @@ async def go(ctx: comms.Context):
                 if config["Q Channel"] != 0:
                     channel = get(guild.channels, id=config["Q Channel"])
                     messages = []
-
+                    print(f'Retrieving Quotes for {guild}')
+                          
                     if channel is not None:
-                        print(f'Retrieving Quotes for {guild} in {channel.name}')
-                        
+                        print(f'Quote Channel: {channel.name}')
+
                         async for message in channel.history(limit=None):
                             messages.append(message)
                         messages.reverse()
