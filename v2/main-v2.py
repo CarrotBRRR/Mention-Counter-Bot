@@ -486,36 +486,34 @@ async def say(ctx, message: str):
 )
 async def get(ctx, message_id: str):
     m = await ctx.send(f'Getting your requested message...')
-    
+
     try:
         msgid = int(message_id)
         message = await ctx.fetch_message(msgid)
         if message is None:
             raise Exception("Invalid Message ID")
+
+        quote = str(message.content)
+
+        for mentioned in message.mentions:
+            quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+
+        em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
+                    url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+        
+        em.add_field(name="", value=message.content)
+
+        att_ems = []
+        att_ems.append(em)
+
+        # if len(message.attachments) != 0:
+        for attachment in message.attachments:
+            att = dc.Embed()
+            att.set_image(url = attachment.url)
+            att_ems.append(att)
+
     except:
-        ctx.send("Please Input a Valid Message ID", ephemeral=True, delete_after=2)
-
-    quote = str(message.content)
-
-    for mentioned in message.mentions:
-        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
-
-    em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
-                url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-    
-    em.add_field(name="", value=message.content)
-
-    att_ems = []
-    att_ems.append(em)
-
-    # if len(message.attachments) != 0:
-    for attachment in message.attachments:
-        att = dc.Embed()
-        att.set_image(url = attachment.url)
-        att_ems.append(att)
-
-    em.set_footer(text='Truly Words of Wisdom...')
-    print('Sending Random Quote Embed!')
+        await m.edit("Please Input a Valid Message ID", delete_after=2)
 
     await m.edit(content=None, embeds=att_ems)
 
