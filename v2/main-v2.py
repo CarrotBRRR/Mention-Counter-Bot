@@ -518,10 +518,10 @@ async def get(ctx, message_id: str):
             att.set_image(url = attachment.url)
             att_ems.append(att)
 
+        await m.edit(content=None, embeds=att_ems)
+
     except:
         await m.edit(content="Please Input a Valid Message ID", delete_after=2)
-
-    await m.edit(content=None, embeds=att_ems)
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
