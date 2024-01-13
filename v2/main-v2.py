@@ -367,7 +367,7 @@ async def on_message_edit(m_before, m_after):
         before_text = str(m_before.content).replace("\n","\n\t")
         after_text = str(m_after.content).replace("\n","\n\t")
 
-        print(f'~ [{m_before.guild}] ({m_before.channel}) {m_before.author} edited:\n   {before_text}\n   -> {after_text}')
+        print(f'~ [{m_before.guild}] ({m_before.channel}) {m_before.author} Edited:\n   {before_text}\n   -> {after_text}')
 
 @bot.event
 async def on_message_delete(message):
@@ -479,7 +479,7 @@ async def sayin(ctx, channel: dc.TextChannel, message: str):
     await channel.send(f'{sayload}')
 
     sayload = sayload.replace('\n', '\n\t')
-    print(f'[{ctx.guild}] ({channel}) {ctx.message.author} (Anonymous):\n\t{sayload}')
+    print(f'+ [{ctx.guild}] ({channel}) {ctx.message.author} (Anonymous):\n\t{sayload}')
 
     await r.edit(content=f'Message sent to {channel.mention}!', delete_after=2)
 
@@ -492,7 +492,7 @@ async def say(ctx, message: str):
 
 @bot.hybrid_command(
     name="get",
-    description="Make the bot say something in current channel!"
+    description="Get a specific message given a Message ID!"
 )
 async def get(ctx, message_id: str):
     m = await ctx.send(f'Getting your requested message...')
