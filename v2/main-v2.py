@@ -631,28 +631,29 @@ async def go(ctx: comms.Context):
     for guild in bot.guilds:
         for data in guilds:
             if data.id == guild.id:
-                    filepath = f'./data/{guild.id}/ServerInfo.json'
-                    with open(filepath, 'r') as f:
-                        config = json.load(f)
+                filepath = f'./data/{guild.id}/ServerInfo.json'
+                with open(filepath, 'r') as f:
+                    config = json.load(f)
 
-                    if config["Q Channel"] != 0:
-                        channel = get(guild.channels, id=config["Q Channel"])
-                        messages = []
+                if config["Q Channel"] != 0:
+                    channel = get(guild.channels, id=config["Q Channel"])
+                    messages = []
 
+                    if channel is not None:
                         print(f'Retrieving Quotes for {guild} in {channel.name}')
-                        if channel is not None:
-                            async for message in channel.history(limit=None):
-                                messages.append(message)
-                            messages.reverse()
+                        
+                        async for message in channel.history(limit=None):
+                            messages.append(message)
+                        messages.reverse()
 
-                            data.setMessages(messages)
-                            print("Done!")
+                        data.setMessages(messages)
+                        print("Done!")
 
-                        else:
-                            print("[ERROR] Could not find quotes channel")
-                            continue
                     else:
+                        print("[ERROR] Could not find quotes channel")
                         continue
+                else:
+                    continue
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
