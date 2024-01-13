@@ -487,42 +487,40 @@ async def say(ctx, message: str):
 async def get(ctx, message_id: str):
     m = await ctx.send(f'Getting your requested message...')
 
-    try:
-        msgid = int(message_id)
-        message = None
-        for channel in ctx.guild.channels:
-            try:
-                print(f'{channel.name}')
-                message = await channel.fetch_message(msgid)
-            except dc.errors.NotFound:
-                continue
+    msgid = int(message_id)
+    message = None
+    for channel in ctx.guild.channels:
+        try:
+            print(f'{channel.name}')
+            message = await channel.fetch_message(msgid)
+        except dc.errors.NotFound:
+            continue
 
-        if message is None:
-            raise Exception("Message with ID not found")
-
-        quote = str(message.content)
-
-        for mentioned in message.mentions:
-            quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
-
-        em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
-                    url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
-        
-        em.add_field(name="", value=message.content)
-
-        att_ems = []
-        att_ems.append(em)
-
-        # if len(message.attachments) != 0:
-        for attachment in message.attachments:
-            att = dc.Embed()
-            att.set_image(url = attachment.url)
-            att_ems.append(att)
-
-        await m.edit(content=None, embeds=att_ems)
-
-    except:
+    if message is None:
         await m.edit(content="Please Input a Valid Message ID", delete_after=2)
+
+    quote = str(message.content)
+
+    for mentioned in message.mentions:
+        quote = quote.replace(f'<@!{mentioned.id}>', f'@{mentioned.name}').replace(f'<@{mentioned.id}>', f'@{mentioned.name}')
+
+    em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
+                url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
+    
+    em.add_field(name="", value=message.content)
+
+    att_ems = []
+    att_ems.append(em)
+
+    # if len(message.attachments) != 0:
+    for attachment in message.attachments:
+        att = dc.Embed()
+        att.set_image(url = attachment.url)
+        att_ems.append(att)
+
+    await m.edit(content=None, embeds=att_ems)
+
+        
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
