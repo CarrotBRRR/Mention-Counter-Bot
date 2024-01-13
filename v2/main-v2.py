@@ -59,7 +59,7 @@ async def getGuildInfo(ctx):
 async def getQuotes(ctx):
     data = await getGuildInfo(ctx)
     config = await getConfig(ctx)
-    channel = get(ctx.guild.channels, id=config["Q Channel"])
+    channel = dc.utils.get(ctx.guild.channels, id=config["Q Channel"])
     messages = []
     print(f'Retrieving Quotes for {ctx.guild} in {channel.name}')
     async for message in channel.history(limit=None):
