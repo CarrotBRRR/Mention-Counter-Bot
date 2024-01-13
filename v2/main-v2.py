@@ -512,9 +512,6 @@ async def get(ctx, message_id: int):
 
     await m.edit(content=None, embeds=att_ems)
 
-
-
-
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
     for channel in channels:
@@ -636,12 +633,12 @@ async def go(ctx: comms.Context):
                     config = json.load(f)
 
                 if config["Q Channel"] != 0:
-                    channel = get(guild.channels, id=config["Q Channel"])
+                    channel = dc.utils.get(guild.channels, id=config["Q Channel"])
                     messages = []
                     print(f'Retrieving Quotes for {guild}')
                           
                     if channel is not None:
-                        print(f'Quote Channel: {channel.name}')
+                        print(f'Quotes Channel: {channel.name}')
 
                         async for message in channel.history(limit=None):
                             messages.append(message)
