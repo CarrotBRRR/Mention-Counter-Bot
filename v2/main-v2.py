@@ -503,6 +503,7 @@ async def get(ctx, message_id: str):
 
     if message is None:
         await m.edit(content="Please Input a Valid Message ID", delete_after=2)
+        return
 
     em = dc.Embed(title='Your Requested Message:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
