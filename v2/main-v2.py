@@ -418,7 +418,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
             att_ems = att_ems[10:]
             if i > 10:
                 await ctx.send(content=None, embeds=att_ems[:10])
-            else:
+            elif i > 0 and i <= 10:
                 await ctx.send(content=None, embeds=att_ems)
     else:
         await m.edit(content=None, embeds=att_ems)
@@ -532,7 +532,7 @@ async def get(ctx, message_id: str):
             att_ems = att_ems[10:]
             if i > 10:
                 await ctx.send(content=None, embeds=att_ems[:10])
-            else:
+            elif i > 0 and i <= 10:
                 await ctx.send(content=None, embeds=att_ems)
     else:
         await m.edit(content=None, embeds=att_ems)
