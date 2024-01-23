@@ -496,9 +496,12 @@ async def get(ctx, message_id: str):
     message = None
     for channel in ctx.guild.channels:
         try:
+            print({channel.name})
             message = await channel.fetch_message(msgid)
+            print(f'Message: {message}')
+            
         except Exception as e:
-            print(f'{channel.name}: {e}')
+            print(f'{e}')
             message = None
             continue
 
