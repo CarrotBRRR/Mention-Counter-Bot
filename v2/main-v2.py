@@ -498,7 +498,7 @@ async def get(ctx, message_id: str):
         try:
             message = await channel.fetch_message(msgid)
         except Exception as e:
-            print(e.message)
+            print(e)
             message = None
             continue
 
