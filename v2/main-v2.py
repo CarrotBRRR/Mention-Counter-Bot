@@ -73,16 +73,18 @@ async def getQuotes(ctx):
 # Retrieves Messages from Specified Channel and 
 # stores it in a temporary global buffer
 async def getMessageHistory(ctx, channel):
-    global prev_channel
-    global message_buffer
+    if 'prev_channelid' not in globals():
+        global prev_channelid
+        global message_buffer
+        prev_channelid = None
     
-    if channel.id != prev_channel or prev_channel is None:
+    if channel.id != prev_channelid or prev_channelid is None:
         message_buffer = []
 
         async for message in channel.history(limit=None):
             message_buffer.append(message)
 
-    prev_channel = channel.id
+    prev_channelid = channel.id
     return message_buffer
 
 # Retrieves Messages that Mention the specified user
@@ -374,7 +376,7 @@ async def on_message_delete(message):
     if not message.author.bot:
         text = str(message.content).replace("\n","\n\t")
 
-        print(f'- [{message.guild}] ({message.channel}) {message.author} Deleted:\n   {text}\n')
+        print(f'- [{message.guild}] ({message.channel}) Message by {message.author} Deleted:\n   {text}\n')
 
 # --------------------------------- Bot Commands ----------------------------------
 # Get a random quote from the server
