@@ -363,7 +363,7 @@ async def on_message_edit(m_before, m_after):
         before_text = str(m_before.content).replace("\n","\n\t")
         after_text = str(m_after.content).replace("\n","\n\t")
 
-        print(f'* [{m_before.guild}] ({m_before.channel}) {m_before.author} Edited:\n   {before_text}\n   -> {after_text}')
+        print(f'* [{m_before.guild}] ({m_before.channel}) {m_before.author} Edited:\n\t   {before_text}\n   -> {after_text}')
 
 @bot.event
 async def on_message_delete(message):
@@ -399,6 +399,8 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
     em.add_field(name="", value=message.content)
 
+    em.set_footer(text='Truly Words of Wisdom...')
+
     att_ems = []
     att_ems.append(em)
 
@@ -408,10 +410,15 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
         att.set_image(url = attachment.url)
         att_ems.append(att)
 
-    em.set_footer(text='Truly Words of Wisdom...')
-    print(f'[INFO] Sending Random Quote Embed!')
-
-    await m.edit(content=None, embeds=att_ems)
+    if len(att_ems) > 10:
+        await m.edit(content=None, embeds=att_ems[:10])
+        i = len(att_ems)
+        while i > 0:
+            i -= 10
+            att_ems = att_ems[10:]
+            await ctx.send(content=None, embeds=att_ems[i:])
+    else:
+        await m.edit(content=None, embeds=att_ems)
 
 # Retrieve Quotes of Specified User
 @bot.hybrid_command(
@@ -511,7 +518,15 @@ async def get(ctx, message_id: str):
         att.set_image(url = attachment.url)
         att_ems.append(att)
 
-    await m.edit(content=None, embeds=att_ems)
+    if len(att_ems) > 10:
+        await m.edit(content=None, embeds=att_ems[:10])
+        i = len(att_ems)
+        while i > 0:
+            i -= 10
+            att_ems = att_ems[10:]
+            await ctx.send(content=None, embeds=att_ems[i:])
+    else:
+        await m.edit(content=None, embeds=att_ems)
 
 @bot.command()
 async def multi_say(ctx, *channels, message: str):
