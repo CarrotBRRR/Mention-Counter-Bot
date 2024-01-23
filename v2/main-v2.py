@@ -395,7 +395,7 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
     message = rand.choice(messages)
     
     # Prepare the Embed
-    em = dc.Embed(title='Your Random Quote:', color=0xffbf00, 
+    em = dc.Embed(title='Your Random Message:', color=0xffbf00, 
                 url=f'https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}')
     em.add_field(name="", value=message.content)
 
@@ -416,7 +416,10 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel]=None):
         while i > 0:
             i -= 10
             att_ems = att_ems[10:]
-            await ctx.send(content=None, embeds=att_ems[i:])
+            if i > 10:
+                await ctx.send(content=None, embeds=att_ems[:10])
+            else:
+                await ctx.send(content=None, embeds=att_ems)
     else:
         await m.edit(content=None, embeds=att_ems)
 
@@ -527,7 +530,10 @@ async def get(ctx, message_id: str):
         while i > 0:
             i -= 10
             att_ems = att_ems[10:]
-            await ctx.send(content=None, embeds=att_ems[i:])
+            if i > 10:
+                await ctx.send(content=None, embeds=att_ems[:10])
+            else:
+                await ctx.send(content=None, embeds=att_ems)
     else:
         await m.edit(content=None, embeds=att_ems)
 
