@@ -28,3 +28,7 @@ get merge conflicts. I do make new branches when I do something that may break t
         - ./data/guildid/message_history/channelid.json
     - if exists, must update on_delete and on_message
         - do not create on_message, because that will cause rate-limiting
+
+### Version 3.X
+- **Separate Classes**
+  - Use an MVC Architecture, to separate the monolith
