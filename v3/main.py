@@ -39,11 +39,9 @@ async def on_ready():
         guild_folder = f'./data/{guild.id}'
         if not os.path.exists(guild_folder):
             log(f'[INFO] Setting up Directory for {guild.name}...')
-            with open('log.txt', 'a') as log_file:
-                log_file.write(f'[INFO] Setting up Directory for {guild.name}...\n')
             os.mkdir(guild_folder)
             os.makedirs(guild_folder, exist_ok=True)
-    
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -52,7 +50,6 @@ async def on_message(message):
     # Rest of your message processing logic goes here
 
     await bot.process_commands(message)
-
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))

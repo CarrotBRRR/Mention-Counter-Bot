@@ -1,7 +1,7 @@
 import discord
 import json
 
-class MessageService:
+class getMessages:
     def __init__(self, token):
         self.token = token
         self.client = discord.Client()
