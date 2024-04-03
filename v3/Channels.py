@@ -13,6 +13,8 @@ import os
 
 class Channels:
     def __init__(self, guild):
+        """Initializes the Channels object and loads the messages from a file if it exists,"""
+        self.guild_folder = f'./data/{guild.id}'
         self.channels = {}
         try:
             self.load()

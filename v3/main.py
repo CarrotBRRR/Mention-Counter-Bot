@@ -7,7 +7,9 @@ import typing
 from discord.ext import commands as comms
 from discord.utils import get
 from dotenv import load_dotenv
-import datetime
+
+from Guild import Guild
+from GlobalLogger import GlobalLogger
 
 intents = dc.Intents.default()
 intents.message_content = True
@@ -16,40 +18,80 @@ intents.members = True
 bot = comms.Bot(command_prefix='q.', intents=intents)
 
 load_dotenv()
-sys.stdout.reconfigure(encoding='utf-8')
 
-def log(message):
-    print(f'{message}')
-    with open(logfile_path, 'a') as log_file:
-        log_file.write(f'{message}\n')
+global l
+l = GlobalLogger()
+
+global guilds
+guilds: dict[str, Guild] = {}
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name}')
+    l.log(f'Logged in as {bot.user.name}')
+    l.log(f'[INFO] Setting up Guilds...')
 
-    current_time = datetime.datetime.now()
-    logfile = f'{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.log'
-
-    global logfile_path
-    logfile_path = os.path.join(guild_folder, logfile)
-
-    log(f'[INFO] Setting up Directory for {guild.name}...')
+    # Empty the guilds dictionary
+    guilds: dict[str, Guild] = {}
 
     for guild in bot.guilds:
-        guild_folder = f'./data/{guild.id}'
+        # Create a directory for the guild if it doesn't exist
         if not os.path.exists(guild_folder):
-            log(f'[INFO] Setting up Directory for {guild.name}...')
             os.mkdir(guild_folder)
             os.makedirs(guild_folder, exist_ok=True)
+            l.log(f'\t[INFO] Created Directory for {guild.name}')
+
+        # Create a Guild object for the guild
+        guilds[str(guild.id)] = Guild(guild)
+        guild_folder = f'./data/{guild.id}'
+        l.log(f'\t[INFO] Created Guild Object for {guild.name}')
+    
+    l.log(f'[INFO] Guilds Setup Complete!')
+
+# ------------------------- Message Events ------------------------- #
 
 @bot.event
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author.bot:
         return
-
-    # Rest of your message processing logic goes here
+    
+    text = str(message.content).replace("\n","\n\t")
+    l.log(f'+ [{message.guild}] ({message.channel}) {message.author}: {text}')
 
     await bot.process_commands(message)
+
+@bot.event
+async def on_message_edit(before, after):
+    if before.author.bot:
+        return
+
+    before_text = str(before.content).replace("\n","\n\t")
+    after_text = str(after.content).replace("\n","\n\t")
+
+    l.log(f'* [{before.guild}] ({before.channel}) {before.author} edited message:\n\t   {before_text.content}\n\t-> {after_text.content}')
+
+@bot.event
+async def on_message_delete(message):
+    if message.author.bot:
+        return
+
+    text = str(message.content).replace("\n","\n\t")
+    l.log(f'- [{message.guild}] ({message.channel}) {message.author}: {text}')
+
+# ------------------------- Guild Events ------------------------- #
+
+@bot.event
+async def on_guild_join(guild):
+    l.log(f'[INFO] Joined Guild: {guild.name}!\n Setting up Guild...')
+
+    guild_folder = f'./data/{guild.id}'
+    if not os.path.exists(guild_folder):
+        os.mkdir(guild_folder)
+        os.makedirs(guild_folder, exist_ok=True)
+        l.log(f'\t[INFO] Created Directory for {guild.name}')
+    
+    guilds[str(guild.id)] = Guild(guild)
+
+    l.log(f'[INFO] Guild Setup for {guild.name} Complete!')
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))
