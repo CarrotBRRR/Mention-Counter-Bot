@@ -61,7 +61,7 @@ async def on_message(message):
 
 @bot.event
 async def on_message_edit(before, after):
-    if before.author.bot:
+    if before.author.bot or after.author.bot:
         return
 
     before_text = str(before.content).replace("\n","\n\t")
