@@ -1,12 +1,11 @@
 """
 Channel class for managing messages in a channel
-Messages are stored in a dictionary with the channel ID as the key
+Messages are stored as an ID in a dictionary with the channel ID as the key
 
 channels = {
     "channel1" : [message1, message2, ...],
     "channel2" : [message1, message2, ...],
 }
-
 """
 import json
 import os
@@ -28,10 +27,12 @@ class Channels:
     def delete_message(self, channel_id, message_id):
         """Deletes a message from the channel"""
         self.channels[channel_id] = [message for message in self.channels[channel_id] if message.id != message_id]
+        self.save()
 
     def add_message(self, channel_id, message):
         """Adds a message to the channel"""
         self.channels[channel_id].append(message.id)
+        self.save()
 
     def get_messages(self, channel_id):
         """Gets all the messages from the channel"""
@@ -44,7 +45,7 @@ class Channels:
                 return message
 
     def get_message(self, message_id):
-        """Gets a message from the all channels"""
+        """Searches all channels for a message with the specified ID"""
         for channel_id in self.channels:
             return self.get_message(channel_id, message_id)
 
