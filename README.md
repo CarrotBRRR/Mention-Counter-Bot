@@ -1,7 +1,7 @@
 # Mention Counter Bot
 Developed by: Dominic Choi (CarrotBRRR)
 
-===
+---
 ## Current Features
 ### V1:
 - Basic commands
@@ -23,8 +23,9 @@ Developed by: Dominic Choi (CarrotBRRR)
 - Same features as V2
 - Message Database (message caching, faster message retrieval)
 - Congratulations message at quote count milestones
+- Built-in Logging (no more terminal redirect lol)
 
-===
+---
 ## TODO:
 - **Finish V3**
 - **Timing Feature**
