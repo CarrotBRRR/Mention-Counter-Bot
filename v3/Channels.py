@@ -22,7 +22,7 @@ class Channels:
 
         except FileNotFoundError:
             for channel in guild.channels:
-                self.channels[channel.id] = []
+                self.add_channel(channel)
             self.save()
 
     ### Message Functions ###
