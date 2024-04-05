@@ -12,11 +12,13 @@ import os
 import random as rand
 import discord
 
+from Message import Message
+
 class Channels:
     def __init__(self, guild):
         """Initializes the Channels object and loads the messages from a file if it exists,"""
         self.guild_folder = f'./data/{guild.id}'
-        self.channels = {}
+        self.channels= {}
         try:
             self.load()
 
@@ -26,14 +28,14 @@ class Channels:
             self.save()
 
     ### Message Functions ###
-    def delete_message(self, channel_id, message_id):
+    def delete_message(self, channel_id, message):
         """Deletes a message from the channel"""
-        self.channels[channel_id] = [message for message in self.channels[channel_id] if message.id != message_id]
+        self.channels[channel_id] = [m for m in self.channels[channel_id] if m.get_id() != message.id]
         self.save()
 
     def add_message(self, channel_id, message):
         """Adds a message to the channel"""
-        self.channels[channel_id].append(message.id)
+        self.channels[channel_id].append(Message(message))
         self.save()
 
     def get_messages(self, channel_id):
@@ -66,9 +68,22 @@ class Channels:
 
         # Save the channels to a file
         with open(f'{self.guild_folder}/channels.json', 'w') as f:
-            json.dump(self.messages, f, indent=4)
+            data = {}
+            for channel in self.channels:
+                messages = []
+                for message in self.channels[channel]:
+                    messages.append(json.dumps(message.__dict__))
+                data[channel] = messages
+
+            json.dump(data, f, indent=4)
 
     def load(self):
         """Loads the message IDs of all channels from a file"""
         with open(f'{self.guild_folder}/channels.json', 'r') as f:
-            self.messages = json.load(f)
+            data = json.load(f)
+
+            for channel in data:
+                messages = []
+                for message in data[channel]:
+                    messages.append(Message(json.loads(message)))
+                self.channels[channel] = messages
