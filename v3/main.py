@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from Guild import Guild
 from GlobalLogger import GlobalLogger
+from EmbedHandler import *
 
 intents = dc.Intents.default()
 intents.message_content = True
@@ -81,7 +82,7 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_guild_join(guild):
-    l.log(f'[INFO] Joined Guild: {guild.name}!\n Setting up Guild...')
+    l.log(f'[INFO] Joined Guild: {guild.name}!\n\tSetting up Guild...')
 
     guild_folder = f'./data/{guild.id}'
     if not os.path.exists(guild_folder):
@@ -92,6 +93,70 @@ async def on_guild_join(guild):
     guilds[str(guild.id)] = Guild(guild)
 
     l.log(f'[INFO] Guild Setup for {guild.name} Complete!')
+
+@bot.event
+async def on_guild_remove(guild):
+    l.log(f'[INFO] Left Guild: {guild.name}!\n\tRemoving Guild from List...')
+    
+    guilds.pop(str(guild.id))
+
+    l.log(f'[INFO] Guild {guild.name} Removed!')
+
+@bot.event
+async def on_guild_channel_create(channel):
+    guilds[str(channel.guild.id)].channels.add_channel(channel)
+
+    l.log(f'[INFO] Added Channel {channel.name} to Guild {channel.guild.name}')
+
+@bot.event
+async def on_guild_channel_delete(channel):
+    guilds[str(channel.guild.id)].channels.remove_channel(channel)
+
+    l.log(f'[INFO] Removed Channel {channel.name} from Guild {channel.guild.name}')
+
+# ------------------------- Command Events ------------------------- #
+@bot.hybrid_command(
+    name="random",
+    brief="Get a random message from a channel!",
+    description="Defaults to the quotes channel if none is provided.",
+    aliases=["r"]
+)
+async def random(ctx, channel: typing.Optional[dc.TextChannel] = None):
+    if channel is None:
+        channel = guilds[str(ctx.guild.id)].config.qchannel
+        if channel == 0:
+            await ctx.send("Please provide a #channel\nor /setqchannel to set the quotes channel", ephemeral=True, delete_after=5)
+            return
+
+    l.log(f'[INFO] ({channel.guild.name}) Getting a random message from {channel.name}...')
+
+    res = await ctx.send(f'Getting a random message from {channel.name}...')
+
+    # Get a random message from the channel
+    random_id = guilds[str(ctx.guild.id)].get_random_message(channel)
+    message = await channel.fetch_message(random_id)
+
+    # Create the embeds for the message
+    ems = await embed_random_quote(channel, message)
+    if ems is None or ems == []:
+        await res.edit(content=f'No messages found in {channel}', delete_after=5)
+        return
+    
+    # Send first 10 embeds as an edit response (Discord only allows 10 embeds per message)
+    if len(ems) > 10:
+        await res.edit(content=None, embeds=ems[:10])
+    i = len(ems)
+
+    # Send the embeds in groups of 10
+    while i > 0:
+        i -= 10
+        ems = ems[10:]
+        if i > 10:
+            await ctx.send(content=None, embeds=ems[:10])
+        elif i > 0 and i <= 10:
+            await ctx.send(content=None, embeds=ems)
+    else:
+        await res.edit(content=None, embeds=ems)
 
 bot.remove_command('help')
 bot.run(os.getenv('TOKEN'))

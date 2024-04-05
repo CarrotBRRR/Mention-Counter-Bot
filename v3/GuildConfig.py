@@ -10,7 +10,6 @@ class Config:
         # Create the guild folder if it doesn't exist
         if not os.path.exists(str(id)):
             os.mkdir(f'./data/{str(id)}')
-            os.makedirs(f'./data/{str(id)}', exist_ok=True)
 
         # Load the guild's configuration from a file if it exists
         try:

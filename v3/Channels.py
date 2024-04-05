@@ -9,6 +9,8 @@ channels = {
 """
 import json
 import os
+import random as rand
+import discord
 
 class Channels:
     def __init__(self, guild):
@@ -35,33 +37,38 @@ class Channels:
         self.save()
 
     def get_messages(self, channel_id):
-        """Gets all the messages from the channel"""
+        """Gets all the message ids from the channel"""
         return self.channels[channel_id]
-    
-    def get_message(self, channel_id, message_id):
-        """Gets a message from a specified channel"""
-        for message in self.channels[channel_id]:
-            if message.id == message_id:
-                return message
 
-    def get_message(self, message_id):
-        """Searches all channels for a message with the specified ID"""
-        for channel_id in self.channels:
-            return self.get_message(channel_id, message_id)
+    def get_random(self, channel_id):
+        """Returns a random message id from the channel"""
+        return rand.choice(self.channels[channel_id])
+    
+    ### Channel Functions ###
+    def add_channel(self, channel):
+        """Initializes a channel with an empty list of messages"""
+        self.channels[channel.id] = []
+        for message in channel.history(limit=None):
+            self.channels[channel.id].append(message.id)
+        self.save()
+
+    def remove_channel(self, channel_id):
+        """Removes a channel from the dictionary"""
+        self.channels.pop(channel_id)
+        self.save()
 
     ### Save/Load Functions ###
     def save(self):
         """Saves the message IDs of all channels to a file"""
         # Create the guild folder if it doesn't exist
         if not os.path.exists(self.guild_folder):
-            os.mkdir(self.guild_folder)
             os.makedirs(self.guild_folder, exist_ok=True)
 
         # Save the channels to a file
-        with open(f'{self.guild_folder}/messages.json', 'w') as f:
+        with open(f'{self.guild_folder}/channels.json', 'w') as f:
             json.dump(self.messages, f, indent=4)
 
     def load(self):
         """Loads the message IDs of all channels from a file"""
-        with open(f'{self.guild_folder}/messages.json', 'r') as f:
+        with open(f'{self.guild_folder}/channels.json', 'r') as f:
             self.messages = json.load(f)

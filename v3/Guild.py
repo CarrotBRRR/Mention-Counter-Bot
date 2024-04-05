@@ -7,7 +7,6 @@ Implments GuildConfig and Channels classes
 import os
 from GuildConfig import Config
 from Channels import Channels
-from Logger import Logger
 
 class Guild:
     def __init__(self, guild):
@@ -18,11 +17,9 @@ class Guild:
         self.guild_folder = f'./data/{guild.id}'
 
         self.channels = Channels(guild)
-        self.logs = Logger(guild)
 
         if not os.path.exists(self.guild_folder):
             os.mkdir(self.guild_folder)
-            os.makedirs(self.guild_folder, exist_ok=True)
 
     def get_guild(self):
         return self.guild
@@ -33,14 +30,22 @@ class Guild:
     def get_channels(self):
         return self.channels
     
-    def get_logs(self):
-        with open(self.logs, 'r') as log_file:
-            return log_file
-    
     def get_guild_folder(self):
         return self.guild_folder
     
     def get_guild_id(self):
         return self.guild.id
     
+    def get_channels(self):
+        return self.channels
 
+    def get_random_message(self, channel_id=None):
+        """Returns a random message from the a channel.
+        Default channel is quotes channel if none is provided"""
+        if channel_id is None:
+            if self.config['qchannel'] != 0:
+                return
+            else:
+                channel_id = self.config['qchannel']
+
+        return self.channels.get_random(channel_id)
