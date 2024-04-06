@@ -159,4 +159,4 @@ async def random(ctx, channel: typing.Optional[dc.TextChannel] = None):
         await res.edit(content=None, embeds=ems)
 
 bot.remove_command('help')
-bot.run(os.getenv('TOKEN'))
+bot.run(os.getenv('TESTTOKEN'))
