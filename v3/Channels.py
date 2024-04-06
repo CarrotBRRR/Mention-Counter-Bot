@@ -19,14 +19,26 @@ class Channels:
         """Initializes the Channels object and loads the messages from a file if it exists,"""
         self.guild_folder = f'./data/{guild.id}'
         self.channels= {}
+
+    @classmethod
+    async def create_channels(self, guild):
+        """Creates a new Channels object"""
+        channels = Channels(guild)
+
         try:
-            self.load()
+            channels.load()
 
         except FileNotFoundError:
             for channel in guild.channels:
-                self.add_channel(channel)
-            self.save()
+                try:
+                    await channels.add_channel(channel)
 
+                except discord.Forbidden:
+                    pass
+            
+            channels.save()
+            return channels
+        
     ### Message Functions ###
     def delete_message(self, channel_id, message):
         """Deletes a message from the channel"""
@@ -47,11 +59,21 @@ class Channels:
         return rand.choice(self.channels[channel_id])
     
     ### Channel Functions ###
-    def add_channel(self, channel):
+    async def add_channel(self, channel):
         """Initializes a channel with an empty list of messages"""
-        self.channels[channel.id] = []
-        for message in channel.history(limit=None):
-            self.channels[channel.id].append(message.id)
+        try:
+            channel.history(limit = 1)
+        except AttributeError:
+            return
+        except discord.Forbidden:
+            return
+
+        temp = []
+        async for message in channel.history(limit=None):
+            temp.append(Message(message))
+        if temp != []:
+            self.channels[channel.id] = temp
+
         self.save()
 
     def remove_channel(self, channel_id):
@@ -72,18 +94,18 @@ class Channels:
             for channel in self.channels:
                 messages = []
                 for message in self.channels[channel]:
-                    messages.append(json.dumps(message.__dict__))
+                    messages.append(message.toObject())
                 data[channel] = messages
 
             json.dump(data, f, indent=4)
 
-    def load(self):
+    async def load(self):
         """Loads the message IDs of all channels from a file"""
         with open(f'{self.guild_folder}/channels.json', 'r') as f:
             data = json.load(f)
 
-            for channel in data:
+            for channel, messages in data:
                 messages = []
-                for message in data[channel]:
-                    messages.append(Message(json.loads(message)))
+                for message in messages:
+                    messages.append(Message(message))
                 self.channels[channel] = messages

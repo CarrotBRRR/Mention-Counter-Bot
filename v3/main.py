@@ -16,7 +16,7 @@ intents = dc.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = comms.Bot(command_prefix='q.', intents=intents)
+bot = comms.Bot(command_prefix='test.', intents=intents)
 
 load_dotenv()
 
@@ -30,19 +30,25 @@ guilds: dict[str, Guild] = {}
 async def on_ready():
     l.log(f'Logged in as {bot.user.name}')
     l.log(f'[INFO] Setting up Guilds...')
+    if not os.path.exists('./data'):
+        os.mkdir('./data')
+        l.log(f'\t[INFO] Created Data Directory')
 
     # Empty the guilds dictionary
     guilds: dict[str, Guild] = {}
 
     for guild in bot.guilds:
         # Create a directory for the guild if it doesn't exist
+        guild_folder = f'./data/{guild.id}'
         if not os.path.exists(guild_folder):
             os.mkdir(guild_folder)
-            os.makedirs(guild_folder, exist_ok=True)
             l.log(f'\t[INFO] Created Directory for {guild.name}')
+        else:
+            l.log(f'\t[INFO] Directory for {guild.name} found!')
 
         # Create a Guild object for the guild
-        guilds[str(guild.id)] = Guild(guild)
+        g = await Guild.create_guild(guild)
+        guilds[str(guild.id)] = g
         guild_folder = f'./data/{guild.id}'
         l.log(f'\t[INFO] Created Guild Object for {guild.name}')
     
@@ -68,7 +74,7 @@ async def on_message_edit(before, after):
     before_text = str(before.content).replace("\n","\n\t")
     after_text = str(after.content).replace("\n","\n\t")
 
-    l.log(f'* [{before.guild}] ({before.channel}) {before.author} edited message:\n\t   {before_text.content}\n\t-> {after_text.content}')
+    l.log(f'* [{before.guild}] ({before.channel}) {before.author} edited message:\n\t   {before_text}\n\t-> {after_text}')
 
 @bot.event
 async def on_message_delete(message):

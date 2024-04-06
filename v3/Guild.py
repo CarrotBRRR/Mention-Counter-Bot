@@ -16,10 +16,16 @@ class Guild:
         self.config = Config(guild.name, guild.id)
         self.guild_folder = f'./data/{guild.id}'
 
-        self.channels = Channels(guild)
+        self.channels = None
 
         if not os.path.exists(self.guild_folder):
             os.mkdir(self.guild_folder)
+
+    @classmethod
+    async def create_guild(self, guild):
+        """Creates a new Guild object"""
+        self.channels = await Channels.create_channels(guild)
+        return Guild(guild)
 
     def get_guild(self):
         return self.guild
