@@ -468,6 +468,37 @@ async def author(ctx, user: dc.Member):
 async def authour(ctx, user: dc.Member):
     await author(ctx, user)
 
+@bot.hybrid_command(
+    name="rank",
+    description="Get your rank in the leaderboard!"
+)
+async def rank(ctx, user: dc.Member):
+    msg = await ctx.send(f'Getting your rank...')
+
+    if user is None:
+        member = ctx.author  
+        
+    else:
+        member = user
+    
+    filepath = f'./data/{ctx.guild.id}/Leaderboard.json'
+
+    em = dc.Embed(title=f"{member.name}'s Rank:", color=0xffbf00)
+    with open(filepath, 'r') as f:
+        leaderboard = json.load(f)
+        for i, user_data in enumerate(leaderboard):
+            if user_data["Name"] == member.name:
+                rank = i + 1
+                break
+        else:
+            rank = None
+
+        em.add_field(name="Rank", value=f"{rank}", inline=False)
+        em.add_field(name="Mentions", value=f"{user_data['Mentions']}", inline=False)
+        em.add_field(name="Authored", value=f"{user_data['Authored']}", inline=False)
+
+    msg.edit(embed=em)
+
 # Make the bot say something
 # Usage: q.sayin #channel "message"
 @bot.hybrid_command(
