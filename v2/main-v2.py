@@ -205,7 +205,7 @@ async def createLBEm(ctx):
                         inline=False)
         index += 1
 
-        if index >= 10:
+        if index > 10:
             break
 
     em.set_footer(text="Brought to you by: CarrotBRRR")
