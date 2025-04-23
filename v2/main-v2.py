@@ -204,6 +204,10 @@ async def createLBEm(ctx):
                         value=f'> {user["Mentions"]} Quotes\n> {user["Authored"]} Authored',
                         inline=False)
         index += 1
+
+        if index >= 10:
+            break
+
     em.set_footer(text="Brought to you by: CarrotBRRR")
 
     return em
