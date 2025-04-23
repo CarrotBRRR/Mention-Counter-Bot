@@ -497,7 +497,7 @@ async def rank(ctx, user: typing.Optional[dc.Member]=None):
         em.add_field(name="Mentions", value=f"{user_data['Mentions']}", inline=False)
         em.add_field(name="Authored", value=f"{user_data['Authored']}", inline=False)
 
-    msg.edit(embed=em)
+    await msg.edit(embed=em)
 
 # Make the bot say something
 # Usage: q.sayin #channel "message"
