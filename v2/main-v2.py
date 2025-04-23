@@ -472,7 +472,7 @@ async def authour(ctx, user: dc.Member):
     name="rank",
     description="Get your rank in the leaderboard!"
 )
-async def rank(ctx, user: dc.Member):
+async def rank(ctx, user: typing.Optional[dc.Member]=None):
     msg = await ctx.send(f'Getting your rank...')
 
     if user is None:
