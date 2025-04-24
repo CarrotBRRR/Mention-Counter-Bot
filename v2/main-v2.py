@@ -496,6 +496,7 @@ async def rank(ctx, user: typing.Optional[dc.Member]=None):
         em.add_field(name="Rank", value=f"{rank}", inline=False)
         em.add_field(name="Mentions", value=f"{user_data['Mentions']}", inline=False)
         em.add_field(name="Authored", value=f"{user_data['Authored']}", inline=False)
+        em.set_image(url=member.display_avatar.url)
 
     await msg.edit(content=None, embed=em)
 
