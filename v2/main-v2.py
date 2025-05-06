@@ -682,6 +682,7 @@ async def owner_refresh(ctx):
 
     print(f'[INFO] Leaderboard Manually Refreshed!')
     await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
+    await ctx.message.author.delete()
 
 @bot.command(description="Initialize stack data")
 @comms.is_owner()
