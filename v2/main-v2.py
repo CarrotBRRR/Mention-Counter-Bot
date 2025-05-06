@@ -207,14 +207,14 @@ async def createLBEm(ctx):
         )
 
         # Start a new embed every 25 fields
-        if i != 0 and (i+1) % 25 == 0:
+        if i % 25 == 24:
             page_number += 1
             ems.append(em)
             em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
 
     # Set footer on the last embed
     if ems:
-        ems[-1].set_footer(text='Brought to you by CarrotBRRR!')
+        ems[-1].set_footer(text='Brought to you by CarrotBRRR')
 
     return ems
 
@@ -682,7 +682,7 @@ async def owner_refresh(ctx):
 
     print(f'[INFO] Leaderboard Manually Refreshed!')
     await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
-    await ctx.message.author.delete()
+    await ctx.message.delete()
 
 @bot.command(description="Initialize stack data")
 @comms.is_owner()
