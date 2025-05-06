@@ -212,6 +212,8 @@ async def createLBEm(ctx):
             ems.append(em)
             em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
 
+    ems.append(em)
+    
     # Set footer on the last embed
     if ems:
         ems[-1].set_footer(text='Brought to you by CarrotBRRR')
