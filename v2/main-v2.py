@@ -207,7 +207,7 @@ async def createLBEm(ctx):
         )
 
         # Start a new embed every 25 fields
-        if i % 25 == 0:
+        if i >= 25 and i % 25 == 0:
             page_number += 1
             ems.append(em)
             em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
@@ -670,6 +670,19 @@ async def logs(ctx):
         await ctx.author.send(content="**Here are the logs:**", file=dc.File(f'./logs/{most_recent_file}'))
 
 # -------------------------------- Owner Commands ---------------------------------
+@bot.command("Manually Refresh the Leaderboard and Scores")
+@comms.is_owner()
+async def owner_refresh(ctx):
+    print(f'[INFO] Refreshing Leaderboard for {ctx.guild.name} Manually...')
+    m = await ctx.send(f'Refreshing leaderboard...', ephemeral=True)
+
+    await getQuotes(ctx)
+    await count(ctx)
+    await updateLB(ctx)
+
+    print(f'[INFO] Leaderboard Manually Refreshed!')
+    await m.edit(content=f'Leaderboard Refreshed!', delete_after=5)
+
 @bot.command(description="Initialize stack data")
 @comms.is_owner()
 async def start(ctx):
@@ -680,7 +693,6 @@ async def start(ctx):
 async def stop(ctx: comms.Context):
     print(f'[INFO] Shutting down...')
     await bot.close()
-
 
 @bot.command(description="sync all global commands")
 @comms.is_owner()
