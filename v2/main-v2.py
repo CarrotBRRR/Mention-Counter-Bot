@@ -207,7 +207,7 @@ async def createLBEm(ctx):
         )
 
         # Start a new embed every 25 fields
-        if i >= 25 and i % 25 == 0:
+        if i != 0 and (i+1) % 25 == 0:
             page_number += 1
             ems.append(em)
             em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
