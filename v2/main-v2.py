@@ -219,7 +219,7 @@ async def createLBEm(ctx):
 
     # Set footer on the last embed
     if ems:
-        ems[-1].set_footer(text=f'Page {page_number}\nBrought to you by CarrotBRRR')
+        ems[-1].set_footer(text=f'Page {page_number}\n----------------------------\nBrought to you by CarrotBRRR')
 
     return ems
 
