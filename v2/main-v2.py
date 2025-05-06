@@ -670,7 +670,7 @@ async def logs(ctx):
         await ctx.author.send(content="**Here are the logs:**", file=dc.File(f'./logs/{most_recent_file}'))
 
 # -------------------------------- Owner Commands ---------------------------------
-@bot.command("Manually Refresh the Leaderboard and Scores")
+@bot.command(description="Manually Refresh the Leaderboard and Scores")
 @comms.is_owner()
 async def owner_refresh(ctx):
     print(f'[INFO] Refreshing Leaderboard for {ctx.guild.name} Manually...')
