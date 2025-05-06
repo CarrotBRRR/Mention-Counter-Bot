@@ -196,21 +196,27 @@ async def getScores(ctx):
 # Create the Leaderboard based on the stored leaderboard
 async def createLBEm(ctx):
     scores = await getScores(ctx)
-    index = 1
-
+    ems = []
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
-    for user in scores:
-        em.add_field(name=f'{index}. {user["Name"]}',
-                        value=f'> {user["Mentions"]} Quotes\n> {user["Authored"]} Authored',
-                        inline=False)
-        index += 1
+    page_number = 1
+    for i, user in enumerate(scores):
+        em.add_field(
+            name=f'{i + 1}. {user["Name"]}',
+            value=f'> {user["Mentions"]} Quotes\n> {user["Authored"]} Authored',
+            inline=False
+        )
 
-        if index > 10:
-            break
+        # Start a new embed every 25 fields
+        if i % 25 == 0:
+            page_number += 1
+            ems.append(em)
+            em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
 
-    em.set_footer(text="Brought to you by: CarrotBRRR")
+    # Set footer on the last embed
+    if ems:
+        ems[-1].set_footer(text='Brought to you by CarrotBRRR!')
 
-    return em
+    return ems
 
 # Edits the Leaderboard with updated data
 async def updateLB(ctx):
@@ -224,8 +230,8 @@ async def updateLB(ctx):
         channel = bot.get_channel(lb_channelid)
         lbmessage = await channel.fetch_message(lb_messageid)
        
-        em = await createLBEm(ctx)
-        await lbmessage.edit(embed=em)
+        ems = await createLBEm(ctx)
+        await lbmessage.edit(embeds=ems)
         print(f'[INFO] Leaderboard Updated!')
 
     else:
