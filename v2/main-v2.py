@@ -198,6 +198,7 @@ async def createLBEm(ctx):
     scores = await getScores(ctx)
     ems = []
     em = dc.Embed(title='Most Quoted Members:', color=0xffbf00)
+    em.set_footer(text='Page 1')
     page_number = 1
     for i, user in enumerate(scores):
         em.add_field(
@@ -210,13 +211,15 @@ async def createLBEm(ctx):
         if i % 25 == 24:
             page_number += 1
             ems.append(em)
-            em = dc.Embed(title=f'Most Quoted Members (Page {page_number}):', color=0xffbf00)
+            em = dc.Embed(title=f'', color=0xffbf00)
+            em.set_footer(text=f'Page {page_number}')
+
 
     ems.append(em)
-    
+
     # Set footer on the last embed
     if ems:
-        ems[-1].set_footer(text='Brought to you by CarrotBRRR')
+        ems[-1].set_footer(text=f'Page {page_number}\nBrought to you by CarrotBRRR')
 
     return ems
 
