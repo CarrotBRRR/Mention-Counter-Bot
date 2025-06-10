@@ -7,3 +7,4 @@
 # Folders to Ignore
 data/
 __pycache__/
+logs/
