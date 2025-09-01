@@ -19,17 +19,18 @@ Developed by: Dominic Choi (CarrotBRRR)
 - manual refresh commands
 - janky logging setup
 
-### V3 (Planned Features):
-- Same features as V2
-- Message Database (message caching, faster message retrieval)
-- Congratulations message at quote count milestones
-- Built-in Logging (no more terminal redirect lol)
+### V3 - ALPHA
+#### Current Features:
+- Basic commands
+- Database Manager
+#### Planned Features:
+- Rewrite V2 Features
+- Quote count milestones
 
 ---
+
 ## TODO:
 - **Finish V3**
-- **Timing Feature**
-    - log time taken in console to retrieve quotes
 
 - **q.commands**
     - send list of commands and descriptions
