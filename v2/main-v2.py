@@ -741,7 +741,7 @@ async def go(ctx: comms.Context):
 
 @bot.command(description="clean up q.* commands")
 @comms.is_owner()
-async def clean(ctx: comms.Context):
+async def clean_commands(ctx: comms.Context):
     print(f'[INFO] Deleting command messages...')
     messages = []
     c = 0
@@ -758,12 +758,40 @@ async def clean(ctx: comms.Context):
     print(f'[INFO] Found {c} command messages to delete.')
 
     for m in messages:
-        if m.content.startswith('q.'):
-            await m.delete()
+        await m.delete()
 
     print(f'[INFO] Deleted {c} command messages.')
 
+@bot.command(description="deletes all messages from bot in current channel")
+@comms.is_owner()
+async def clean_bot(ctx: comms.Context):
+    print(f'[INFO] Deleting bot messages...')
+    messages = []
+    c = 0
+    channel = ctx.channel
+
+    print(f'[INFO] Scanning channel history of {channel.name}...')
+
+    async for message in channel.history(limit=None):
+        if message.author == bot.user:
+            messages.append(message)
+            c += 1
+
+    print(f'[INFO] Found {c} bot messages to delete.')
+
+    for m in messages:
+        await m.delete()
+
+    print(f'[INFO] Deleted {c} bot messages.')
+
 bot.remove_command('help')
+
+@bot.command(description="Displays help information for commands")
+@comms.is_owner()
+async def clean(ctx: comms.Context):
+    await clean_commands(ctx)
+    await clean_bot(ctx)
+    
 
 async def run_bot(token: str):
     while True:
