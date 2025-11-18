@@ -744,11 +744,21 @@ async def go(ctx: comms.Context):
 async def clean(ctx: comms.Context):
     print(f'[INFO] Deleting command messages...')
     messages = []
+    c = 0
+    
     async for message in ctx.channel.history(limit=None):
-        messages.append(message)
+        if message.content.startswith('q.'):
+            messages.append(message)
+    
+            c += 1
+
+    print(f'[INFO] Found {c} command messages to delete.')
+
     for m in messages:
         if m.content.startswith('q.'):
             await m.delete()
+
+    print(f'[INFO] Deleted {c} command messages.')
 
 bot.remove_command('help')
 
