@@ -736,7 +736,19 @@ async def go(ctx: comms.Context):
                         continue
                 else:
                     continue
+    await ctx.message.delete()
     print(f'[INFO] Finished startup sequence!')
+
+@bot.command(description="clean up q.* commands")
+@comms.is_owner()
+async def clean(ctx: comms.Context):
+    print(f'[INFO] Deleting command messages...')
+    messages = []
+    async for message in ctx.channel.history(limit=None):
+        messages.append(message)
+    for m in messages:
+        if m.content.startswith('q.'):
+            await m.delete()
 
 bot.remove_command('help')
 
