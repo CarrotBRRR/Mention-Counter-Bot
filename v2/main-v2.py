@@ -745,8 +745,11 @@ async def clean(ctx: comms.Context):
     print(f'[INFO] Deleting command messages...')
     messages = []
     c = 0
-    
-    async for message in ctx.channel.history(limit=None):
+    channel = ctx.channel
+
+    print(f'[INFO] Scanning channel history of {channel.name}...')
+
+    async for message in channel.history(limit=None):
         if message.content.startswith('q.'):
             messages.append(message)
     
