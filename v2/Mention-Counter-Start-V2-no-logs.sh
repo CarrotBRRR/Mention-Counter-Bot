@@ -6,7 +6,7 @@ do
     git pull origin main
 
     echo "--------------------- Starting Up ---------------------"
-    python3.13 -u ./main-v2.py
+    python -u Mention-Counter-Bot/v2/main-v2.py
 
-    clear
+    
 done
